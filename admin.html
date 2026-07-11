@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central</title>
+  <title>Admin — El Progreso Central v4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -16,6 +16,7 @@
       --danger:#e05555; --danger-bg:rgba(224,85,85,0.10); --danger-brd:rgba(224,85,85,0.25);
       --success:#4caf7d; --success-bg:rgba(76,175,125,0.10); --success-brd:rgba(76,175,125,0.25);
       --warn:#f0a500; --warn-bg:rgba(240,165,0,0.10); --warn-brd:rgba(240,165,0,0.25);
+      --info:#4a9eff; --info-bg:rgba(74,158,255,0.10); --info-brd:rgba(74,158,255,0.25);
       --radius:10px; --trans:.18s ease;
       --sidebar-w:220px; --sidebar-c:60px; --header-h:58px;
     }
@@ -66,16 +67,17 @@
     .section-sub{font-size:13px;color:var(--muted);margin-bottom:22px;}
 
     /* KPI */
-    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px;}
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px;}
     .kpi-card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
     .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
     .kpi-card.gold::before{background:var(--gold);}
     .kpi-card.green::before{background:var(--success);}
     .kpi-card.warn::before{background:var(--warn);}
     .kpi-card.red::before{background:var(--danger);}
+    .kpi-card.info::before{background:var(--info);}
     .kpi-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-    .kpi-value{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:800;line-height:1;}
-    .kpi-value.gold{color:var(--gold);} .kpi-value.green{color:var(--success);} .kpi-value.warn{color:var(--warn);} .kpi-value.red{color:var(--danger);}
+    .kpi-value{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:800;line-height:1;}
+    .kpi-value.gold{color:var(--gold);} .kpi-value.green{color:var(--success);} .kpi-value.warn{color:var(--warn);} .kpi-value.red{color:var(--danger);} .kpi-value.info{color:var(--info);}
     .kpi-hint{font-size:12px;color:var(--muted);margin-top:6px;}
 
     /* PANEL */
@@ -90,6 +92,7 @@
     .badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-brd);}
     .badge-red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-brd);}
     .badge-muted{background:var(--surf-2);color:var(--muted);border:1px solid var(--brd);}
+    .badge-info{background:var(--info-bg);color:var(--info);border:1px solid var(--info-brd);}
 
     /* TOOLBAR */
     .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
@@ -102,13 +105,19 @@
     select.filter-sel:focus{border-color:var(--gold);}
 
     /* BUTTONS */
-    .btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all var(--trans);white-space:nowrap;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all var(--trans);white-space:nowrap;}
     .btn-primary{background:var(--gold);color:#111318;font-weight:600;}
     .btn-primary:hover{background:#f0b040;box-shadow:0 4px 14px rgba(245,166,35,.25);}
     .btn-ghost{background:transparent;border:1px solid var(--brd);color:var(--muted);}
     .btn-ghost:hover{background:var(--surf-2);color:var(--txt);}
     .btn-danger{background:var(--danger-bg);border:1px solid var(--danger-brd);color:var(--danger);}
     .btn-danger:hover{background:var(--danger);color:#fff;}
+    .btn-success{background:var(--success-bg);border:1px solid var(--success-brd);color:var(--success);}
+    .btn-success:hover{background:var(--success);color:#fff;}
+    .btn-warn{background:var(--warn-bg);border:1px solid var(--warn-brd);color:var(--warn);}
+    .btn-warn:hover{background:var(--warn);color:#111;}
+    .btn-info{background:var(--info-bg);border:1px solid var(--info-brd);color:var(--info);}
+    .btn-info:hover{background:var(--info);color:#fff;}
     .btn-sm{padding:5px 10px;font-size:12px;}
 
     /* TABLE */
@@ -122,7 +131,7 @@
     .td-muted{color:var(--muted);font-size:12px;}
     .td-mono{font-family:monospace;font-size:12px;color:var(--gold);}
     .td-num{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
-    .td-actions{display:flex;gap:6px;}
+    .td-actions{display:flex;gap:6px;flex-wrap:wrap;}
 
     /* EMPTY */
     .empty-state{text-align:center;padding:44px 20px;color:var(--muted);}
@@ -130,26 +139,48 @@
     .empty-state p{font-size:14px;margin-bottom:16px;}
 
     /* MODAL */
-    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;padding:20px;}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.70);z-index:200;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
     .overlay.open{display:flex;}
-    .modal{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.7);animation:modalIn .18s ease;}
+    .modal{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);width:100%;max-width:580px;box-shadow:0 24px 64px rgba(0,0,0,.7);animation:modalIn .18s ease;margin:auto;}
+    .modal-lg{max-width:720px;}
     @keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
     .modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;}
     .modal-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
     .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;border-radius:6px;transition:color var(--trans);}
     .modal-close:hover{color:var(--txt);}
     .modal-body{padding:20px 22px;}
-    .modal-footer{padding:14px 22px;border-top:1px solid var(--brd);display:flex;justify-content:flex-end;gap:10px;}
+    .modal-footer{padding:14px 22px;border-top:1px solid var(--brd);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
 
     /* FORM */
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
     .form-group{margin-bottom:14px;}
+    .form-group:last-child{margin-bottom:0;}
     .form-label{display:block;font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
     .form-input,.form-select,.form-textarea{width:100%;background:var(--surf-2);border:1px solid var(--brd);border-radius:7px;color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;padding:10px 12px;outline:none;transition:border-color var(--trans),box-shadow var(--trans);}
     .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.12);}
     .form-input::placeholder,.form-textarea::placeholder{color:var(--muted);opacity:.5;}
     .form-textarea{resize:vertical;min-height:70px;}
     .form-select{cursor:pointer;}
+    .form-input:read-only{opacity:.6;cursor:default;}
+    .form-divider{border:none;border-top:1px solid var(--brd);margin:18px 0;}
+    .form-section-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+
+    /* ITEMS PICKER */
+    .item-picker-row{display:grid;grid-template-columns:1fr 100px 120px 80px;gap:8px;align-items:end;margin-bottom:10px;}
+    .item-picker-row .btn{height:40px;}
+    .items-list{background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;overflow:hidden;margin-bottom:12px;}
+    .items-list-header{display:grid;grid-template-columns:1fr 70px 80px 90px 28px;gap:8px;padding:8px 12px;border-bottom:1px solid var(--brd);font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);}
+    .items-list-row{display:grid;grid-template-columns:1fr 70px 80px 90px 28px;gap:8px;padding:9px 12px;border-bottom:1px solid var(--brd);font-size:13px;align-items:center;}
+    .items-list-row:last-child{border-bottom:none;}
+    .items-list-empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;}
+    .item-remove{background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 5px;border-radius:4px;transition:color var(--trans);}
+    .item-remove:hover{color:var(--danger);}
+
+    /* RETORNO LIST */
+    .retorno-item{background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-bottom:10px;}
+    .retorno-item-name{font-weight:600;font-size:14px;margin-bottom:10px;}
+    .retorno-item-meta{font-size:12px;color:var(--muted);margin-bottom:10px;}
 
     /* CAT LIST */
     .cat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
@@ -164,10 +195,24 @@
     .coming-soon p{font-size:13px;max-width:300px;}
 
     /* TOAST */
-    .toast{position:fixed;bottom:24px;right:24px;background:var(--surf-3);border:1px solid var(--brd);border-radius:8px;padding:12px 18px;font-size:13px;color:var(--txt);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:999;transform:translateY(80px);opacity:0;transition:all .25s ease;display:flex;align-items:center;gap:10px;}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--surf-3);border:1px solid var(--brd);border-radius:8px;padding:12px 18px;font-size:13px;color:var(--txt);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:999;transform:translateY(80px);opacity:0;transition:all .25s ease;display:flex;align-items:center;gap:10px;max-width:320px;}
     .toast.show{transform:translateY(0);opacity:1;}
     .toast.ok{border-color:var(--success-brd);}
     .toast.err{border-color:var(--danger-brd);}
+    .toast.warn{border-color:var(--warn-brd);}
+
+    /* SALDO SUMMARY */
+    .saldo-box{background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;padding:14px 18px;display:flex;gap:24px;flex-wrap:wrap;margin-top:4px;}
+    .saldo-item{display:flex;flex-direction:column;gap:3px;}
+    .saldo-item label{font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);}
+    .saldo-item span{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;}
+
+    /* PRINT */
+    @media print {
+      body > *:not(#printArea){ display:none !important; }
+      #printArea{ display:block !important; }
+    }
+    #printArea{ display:none; }
 
     @media(max-width:768px){
       .sidebar{width:var(--sidebar-c);}
@@ -176,8 +221,10 @@
       .main{margin-left:var(--sidebar-c);}
       .content{padding:18px 14px;}
       .kpi-grid{grid-template-columns:1fr 1fr;}
-      .form-row{grid-template-columns:1fr;}
+      .form-row,.form-row-3{grid-template-columns:1fr;}
       .user-email{max-width:90px;}
+      .item-picker-row{grid-template-columns:1fr 1fr;}
+      .td-actions{flex-direction:column;}
     }
   </style>
 </head>
@@ -244,38 +291,101 @@
 
     <div class="content">
 
-      <!-- DASHBOARD -->
+      <!-- ═══════════════ DASHBOARD ═══════════════ -->
       <div class="section active" id="sec-dashboard">
         <div class="section-title">Dashboard</div>
         <div class="section-sub">Resumen general del negocio</div>
         <div class="kpi-grid">
-          <div class="kpi-card gold"><div class="kpi-label">Remisiones activas</div><div class="kpi-value gold">—</div><div class="kpi-hint">Equipos fuera en este momento</div></div>
-          <div class="kpi-card green"><div class="kpi-label">Unidades en bodega</div><div class="kpi-value green" id="kpi-bodega">—</div><div class="kpi-hint">Disponibles para despachar</div></div>
-          <div class="kpi-card warn"><div class="kpi-label">Pagos pendientes</div><div class="kpi-value warn">—</div><div class="kpi-hint">Clientes con saldo por cobrar</div></div>
-          <div class="kpi-card red"><div class="kpi-label">En mantenimiento</div><div class="kpi-value red" id="kpi-mant">—</div><div class="kpi-hint">Elementos fuera de servicio</div></div>
+          <div class="kpi-card gold">
+            <div class="kpi-label">Remisiones activas</div>
+            <div class="kpi-value gold" id="kpi-rem-activas">—</div>
+            <div class="kpi-hint">Equipos fuera en este momento</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label">Unidades en bodega</div>
+            <div class="kpi-value green" id="kpi-bodega">—</div>
+            <div class="kpi-hint">Principal + auxiliar disponibles</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">Saldo por cobrar</div>
+            <div class="kpi-value warn" id="kpi-saldo">—</div>
+            <div class="kpi-hint">Total cartera pendiente</div>
+          </div>
+          <div class="kpi-card red">
+            <div class="kpi-label">En mantenimiento</div>
+            <div class="kpi-value red" id="kpi-mant">—</div>
+            <div class="kpi-hint">Unidades fuera de servicio</div>
+          </div>
+          <div class="kpi-card info">
+            <div class="kpi-label">En campo</div>
+            <div class="kpi-value info" id="kpi-campo">—</div>
+            <div class="kpi-hint">Unidades despachadas actualmente</div>
+          </div>
         </div>
+
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">Remisiones recientes</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Cliente</th><th>Salida</th><th>Retorno est.</th><th>Valor</th><th>Saldo</th><th>Estado</th></tr></thead>
+              <tbody id="dash-rem-tbody"><tr><td colspan="7"><div class="empty-state"><p>Cargando...</p></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="panel">
           <div class="panel-header"><div class="panel-title">Inventario — resumen</div></div>
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Código</th><th>Elemento</th><th>Categoría</th><th>Bodega</th><th>Campo</th><th>Estado</th></tr></thead>
-              <tbody id="dash-inv-tbody"><tr><td colspan="6"><div class="empty-state"><p>Cargando...</p></div></td></tr></tbody>
+              <thead><tr><th>Código</th><th>Elemento</th><th>Categoría</th><th>Bodega P</th><th>Bodega A</th><th>Campo</th><th>Mant.</th><th>Estado</th></tr></thead>
+              <tbody id="dash-inv-tbody"><tr><td colspan="8"><div class="empty-state"><p>Cargando...</p></div></td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- REMISIONES -->
+      <!-- ═══════════════ REMISIONES ═══════════════ -->
       <div class="section" id="sec-remisiones">
         <div class="section-title">Remisiones</div>
         <div class="section-sub">Control de salida y retorno de equipos</div>
-        <div class="panel"><div class="coming-soon">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <h3>Próximamente</h3><p>Se construye después del inventario.</p>
-        </div></div>
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="remSearch" placeholder="Buscar por # o cliente..." />
+          </div>
+          <select class="filter-sel" id="remEstFilter">
+            <option value="">Todos los estados</option>
+            <option value="activa">Activa</option>
+            <option value="retornada">Retornada</option>
+            <option value="pagada">Pagada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+          <button class="btn btn-primary" id="btnNuevaRemision">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva remisión
+          </button>
+        </div>
+        <div class="panel">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Cliente</th><th>Conductor</th><th>Salida</th><th>Retorno est.</th>
+                  <th>Modalidad</th><th>Valor</th><th>Saldo</th><th>Estado</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="remTbody">
+                <tr><td colspan="10"><div class="empty-state">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <p>No hay remisiones aún.</p>
+                </div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <!-- INVENTARIO -->
+      <!-- ═══════════════ INVENTARIO ═══════════════ -->
       <div class="section" id="sec-inventario">
         <div class="section-title">Inventario</div>
         <div class="section-sub">Stock de equipos y elementos</div>
@@ -297,9 +407,11 @@
         <div class="panel">
           <div class="tbl-wrap">
             <table>
-              <thead><tr><th>Código</th><th>Elemento</th><th>Categoría</th><th>Unidad</th><th>Total</th><th>Bodega</th><th>Campo</th><th>Estado</th><th></th></tr></thead>
+              <thead>
+                <tr><th>Código</th><th>Elemento</th><th>Categoría</th><th>Unidad</th><th>Total</th><th>Bodega P</th><th>Bodega A</th><th>Campo</th><th>Mant.</th><th>Estado</th><th></th></tr>
+              </thead>
               <tbody id="invTbody">
-                <tr><td colspan="9"><div class="empty-state">
+                <tr><td colspan="11"><div class="empty-state">
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                   <p>No hay elementos aún.</p>
                 </div></td></tr>
@@ -309,7 +421,7 @@
         </div>
       </div>
 
-      <!-- PAGOS -->
+      <!-- ═══════════════ PAGOS ═══════════════ -->
       <div class="section" id="sec-pagos">
         <div class="section-title">Pagos</div>
         <div class="section-sub">Registro de cobros y cartera</div>
@@ -319,7 +431,7 @@
         </div></div>
       </div>
 
-      <!-- REPORTES -->
+      <!-- ═══════════════ REPORTES ═══════════════ -->
       <div class="section" id="sec-reportes">
         <div class="section-title">Reportes</div>
         <div class="section-sub">Análisis y exportación de datos</div>
@@ -329,15 +441,194 @@
         </div></div>
       </div>
 
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <!-- ═══════════ MODAL: NUEVA / EDITAR REMISIÓN ═══════════ -->
+  <div class="overlay" id="overlayRem">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div class="modal-title" id="modalRemTitle">Nueva remisión</div>
+        <button class="modal-close" id="closeModalRem">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="remId" />
+
+        <!-- Fila 1: Número + estado -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Número de remisión</label>
+            <input class="form-input" type="text" id="remNumero" placeholder="REM-001" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-select" id="remEstado">
+              <option value="activa">Activa</option>
+              <option value="retornada">Retornada</option>
+              <option value="pagada">Pagada</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+        <div class="form-section-title">Cliente</div>
+
+        <div class="form-group">
+          <label class="form-label">Nombre del cliente</label>
+          <input class="form-input" type="text" id="remClienteNombre" placeholder="Nombre completo o empresa" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-input" type="text" id="remClienteTel" placeholder="300 000 0000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dirección de obra</label>
+            <input class="form-input" type="text" id="remDireccion" placeholder="Dirección donde va el equipo" />
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+        <div class="form-section-title">Logística</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Conductor</label>
+            <input class="form-input" type="text" id="remConductor" placeholder="Nombre del conductor" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Modalidad de cobro</label>
+            <select class="form-select" id="remModalidad">
+              <option value="dia">Por día</option>
+              <option value="semana">Por semana</option>
+              <option value="mes">Por mes</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fecha de salida</label>
+            <input class="form-input" type="date" id="remFechaSalida" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha retorno estimada</label>
+            <input class="form-input" type="date" id="remFechaRetorno" />
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+        <div class="form-section-title">Ítems despachados</div>
+
+        <!-- Picker de ítems -->
+        <div class="item-picker-row">
+          <div>
+            <label class="form-label">Elemento</label>
+            <select class="form-select" id="pickerItem"><option value="">Seleccionar elemento...</option></select>
+          </div>
+          <div>
+            <label class="form-label">Cantidad</label>
+            <input class="form-input" type="number" id="pickerCantidad" min="1" placeholder="0" />
+          </div>
+          <div>
+            <label class="form-label">Origen</label>
+            <select class="form-select" id="pickerOrigen">
+              <option value="principal">Bodega principal</option>
+              <option value="auxiliar">Bodega auxiliar</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary" id="btnAddItem" style="width:100%;justify-content:center;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Añadir
+            </button>
+          </div>
+        </div>
+
+        <div id="remItemsList">
+          <div class="items-list-empty" style="background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;padding:16px;text-align:center;color:var(--muted);font-size:13px;">
+            Sin ítems añadidos aún.
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+        <div class="form-section-title">Cobro</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Valor total ($)</label>
+            <input class="form-input" type="number" id="remValorTotal" min="0" placeholder="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Abono recibido ($)</label>
+            <input class="form-input" type="number" id="remAbono" min="0" placeholder="0" />
+          </div>
+        </div>
+        <div class="saldo-box" id="saldoBox">
+          <div class="saldo-item">
+            <label>Valor total</label>
+            <span id="saldoTotal" style="color:var(--txt)">$0</span>
+          </div>
+          <div class="saldo-item">
+            <label>Abono</label>
+            <span id="saldoAbono" style="color:var(--success)">$0</span>
+          </div>
+          <div class="saldo-item">
+            <label>Saldo pendiente</label>
+            <span id="saldoPendiente" style="color:var(--warn)">$0</span>
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-textarea" id="remNotas" placeholder="Observaciones generales..."></textarea>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelModalRem">Cancelar</button>
+        <button class="btn btn-primary" id="saveRem">Guardar remisión</button>
+      </div>
     </div>
   </div>
 
-  <!-- MODAL: ITEM -->
+  <!-- ═══════════ MODAL: REGISTRAR RETORNO ═══════════ -->
+  <div class="overlay" id="overlayRetorno">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div class="modal-title">Registrar retorno</div>
+        <button class="modal-close" id="closeModalRetorno">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="retornoRemId" />
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Registra las cantidades que regresan por cada ítem. Las unidades defectuosas pasarán a mantenimiento.</p>
+        <div id="retornoItemsList"></div>
+        <div class="form-group" style="margin-top:14px;">
+          <label class="form-label">Notas de retorno</label>
+          <textarea class="form-textarea" id="retornoNotas" placeholder="Observaciones del estado del retorno..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelRetorno">Cancelar</button>
+        <button class="btn btn-success" id="confirmRetorno">Confirmar retorno</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: ITEM INVENTARIO ═══════════ -->
   <div class="overlay" id="overlayItem">
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title" id="modalItemTitle">Nuevo elemento</div>
-        <button class="modal-close" id="closeModalItem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-close" id="closeModalItem">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="itemId" />
@@ -380,8 +671,18 @@
             <input class="form-input" type="number" id="itemTotal" min="0" placeholder="0" />
           </div>
           <div class="form-group">
-            <label class="form-label">En bodega</label>
+            <label class="form-label">En bodega principal</label>
             <input class="form-input" type="number" id="itemBodega" min="0" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">En bodega auxiliar</label>
+            <input class="form-input" type="number" id="itemBodegaAux" min="0" placeholder="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">En mantenimiento</label>
+            <input class="form-input" type="number" id="itemMantenimiento" min="0" placeholder="0" />
           </div>
         </div>
         <div class="form-group">
@@ -396,12 +697,14 @@
     </div>
   </div>
 
-  <!-- MODAL: CATEGORÍAS -->
+  <!-- ═══════════ MODAL: CATEGORÍAS ═══════════ -->
   <div class="overlay" id="overlayCats">
     <div class="modal" style="max-width:400px;">
       <div class="modal-header">
         <div class="modal-title">Categorías</div>
-        <button class="modal-close" id="closeModalCats"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-close" id="closeModalCats">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <div class="modal-body">
         <div class="cat-list" id="catList"><div class="cat-empty">Cargando...</div></div>
@@ -420,15 +723,19 @@
     </div>
   </div>
 
-  <!-- MODAL: CONFIRMAR ELIMINAR -->
+  <!-- ═══════════ MODAL: CONFIRMAR ELIMINAR ═══════════ -->
   <div class="overlay" id="overlayDel">
     <div class="modal" style="max-width:380px;">
       <div class="modal-header">
-        <div class="modal-title">Eliminar elemento</div>
-        <button class="modal-close" id="closeModalDel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <div class="modal-title" id="delModalTitle">Eliminar elemento</div>
+        <button class="modal-close" id="closeModalDel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <div class="modal-body">
-        <p style="color:var(--muted);font-size:14px;line-height:1.6;">¿Seguro que deseas eliminar <strong id="delNombre" style="color:var(--txt);"></strong>? Esta acción no se puede deshacer.</p>
+        <p style="color:var(--muted);font-size:14px;line-height:1.6;">
+          ¿Seguro que deseas eliminar <strong id="delNombre" style="color:var(--txt);"></strong>? Esta acción no se puede deshacer.
+        </p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-ghost" id="cancelDel">Cancelar</button>
@@ -437,15 +744,42 @@
     </div>
   </div>
 
+  <!-- MODAL: SELLAR -->
+  <div class="overlay" id="overlaySeal">
+    <div class="modal" style="max-width:380px;">
+      <div class="modal-header">
+        <div class="modal-title">Sellar remisión</div>
+        <button class="modal-close" id="closeModalSeal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--muted);font-size:14px;line-height:1.6;">
+          Sellar la remisión <strong id="sealNumero" style="color:var(--gold);"></strong> la marcará como <strong style="color:var(--txt);">cerrada y no editable</strong>. ¿Continuar?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelSeal">Cancelar</button>
+        <button class="btn btn-warn" id="confirmSeal">Sellar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
-  <!-- FIREBASE -->
+  <!-- ═══════════════════════════════════════════
+       FIREBASE + LÓGICA
+  ════════════════════════════════════════════ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, doc, onSnapshot, addDoc, setDoc, deleteDoc, getDoc, serverTimestamp }
-      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, doc,
+      onSnapshot, addDoc, setDoc, deleteDoc, getDoc, updateDoc,
+      serverTimestamp, writeBatch, increment
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey:            "AIzaSyBVu4D7EHOLWsCbOe1o8Z7GrKe9cvHulmk",
@@ -460,11 +794,29 @@
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
+    // ─── Estado global ───
     let items      = [];
     let categorias = [];
+    let remisiones = [];
     let deleteId   = null;
+    let deleteType = "item"; // "item" | "remision"
+    let sealId     = null;
+    let remItems   = []; // ítems del modal de remisión en edición
+    let toastTimer = null;
 
-    // GUARD
+    // ─── Helpers ───
+    const fmt = n => "$" + (n||0).toLocaleString("es-CO");
+    const fmtDate = s => s ? s.split("-").reverse().join("/") : "—";
+
+    function toast(msg, tipo = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = "toast " + tipo + " show";
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
+    }
+
+    // ─── Auth ───
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = "index.html"; return; }
       const snap = await getDoc(doc(db, "usuarios", user.uid));
@@ -475,12 +827,11 @@
       initListeners();
     });
 
-    // LOGOUT
     document.getElementById("btnLogout").addEventListener("click", async () => {
       await signOut(auth); window.location.href = "index.html";
     });
 
-    // NAVEGACIÓN
+    // ─── Navegación ───
     const titles = { dashboard:"Dashboard", remisiones:"Remisiones", inventario:"Inventario", pagos:"Pagos", reportes:"Reportes" };
     document.querySelectorAll(".sb-item[data-section]").forEach(item => {
       item.addEventListener("click", () => {
@@ -493,21 +844,12 @@
       });
     });
 
-    // SIDEBAR TOGGLE
     document.getElementById("sidebarToggle").addEventListener("click", () => {
       document.getElementById("sidebar").classList.toggle("collapsed");
       document.getElementById("main").classList.toggle("expanded");
     });
 
-    // TOAST
-    function toast(msg, tipo = "ok") {
-      const el = document.getElementById("toast");
-      el.textContent = msg;
-      el.className = "toast " + tipo + " show";
-      setTimeout(() => el.classList.remove("show"), 3000);
-    }
-
-    // LISTENERS
+    // ─── Listeners Firebase ───
     function initListeners() {
       onSnapshot(collection(db, "categorias"), snap => {
         categorias = snap.docs.map(d => ({ id: d.id, ...d.data() }))
@@ -521,10 +863,594 @@
           .sort((a,b) => (a.codigo||"").localeCompare(b.codigo||""));
         renderInventario();
         renderDashboard();
+        renderPickerItems();
+      });
+
+      onSnapshot(collection(db, "remisiones"), snap => {
+        remisiones = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+        renderRemisiones();
+        renderDashboard();
       });
     }
 
-    // RENDER INVENTARIO
+    // ════════════════════════════════════
+    // RENDER DASHBOARD
+    // ════════════════════════════════════
+    function renderDashboard() {
+      // KPIs inventario
+      const totalBodega = items.reduce((s,it) => s+(it.en_bodega||0)+(it.en_bodega_aux||0), 0);
+      const totalMant   = items.reduce((s,it) => s+(it.en_mantenimiento||0), 0);
+      const totalCampo  = items.reduce((s,it) => {
+        const c = (it.stock_total||0)-(it.en_bodega||0)-(it.en_bodega_aux||0)-(it.en_mantenimiento||0);
+        return s + Math.max(0,c);
+      }, 0);
+      document.getElementById("kpi-bodega").textContent = totalBodega;
+      document.getElementById("kpi-mant").textContent   = totalMant;
+      document.getElementById("kpi-campo").textContent  = totalCampo;
+
+      // KPIs remisiones
+      const activas = remisiones.filter(r => r.estado === "activa").length;
+      const saldo   = remisiones.filter(r => r.estado !== "cancelada")
+                        .reduce((s,r) => s + Math.max(0,(r.valor_total||0)-(r.abono||0)), 0);
+      document.getElementById("kpi-rem-activas").textContent = activas;
+      document.getElementById("kpi-saldo").textContent = fmt(saldo);
+
+      // Tabla remisiones recientes
+      const recent = remisiones.slice(0,6);
+      const tbody  = document.getElementById("dash-rem-tbody");
+      if (!recent.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>Sin remisiones aún.</p></div></td></tr>`;
+      } else {
+        tbody.innerHTML = recent.map(r => {
+          const sd = remBadge(r.estado);
+          const sv = Math.max(0,(r.valor_total||0)-(r.abono||0));
+          return `<tr>
+            <td class="td-mono">${r.numero||"—"}</td>
+            <td><strong>${r.cliente_nombre||"—"}</strong></td>
+            <td class="td-muted">${fmtDate(r.fecha_salida)}</td>
+            <td class="td-muted">${fmtDate(r.fecha_retorno_estimada)}</td>
+            <td class="td-num">${fmt(r.valor_total)}</td>
+            <td class="td-num" style="color:var(--warn)">${fmt(sv)}</td>
+            <td><span class="badge ${sd.cls}">${sd.label}</span></td>
+          </tr>`;
+        }).join("");
+      }
+
+      // Tabla inventario resumen
+      const tbody2 = document.getElementById("dash-inv-tbody");
+      const inv5   = items.slice(0,6);
+      if (!inv5.length) {
+        tbody2.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>Sin elementos aún.</p></div></td></tr>`;
+      } else {
+        tbody2.innerHTML = inv5.map(it => {
+          const campo = Math.max(0,(it.stock_total||0)-(it.en_bodega||0)-(it.en_bodega_aux||0)-(it.en_mantenimiento||0));
+          const eb = it.estado==="activo"?"badge-green":it.estado==="mantenimiento"?"badge-warn":"badge-red";
+          const el = it.estado==="activo"?"Activo":it.estado==="mantenimiento"?"Mant.":"Baja";
+          return `<tr>
+            <td class="td-mono">${it.codigo||"—"}</td>
+            <td>${it.nombre||"—"}</td>
+            <td class="td-muted">${it.categoria||"—"}</td>
+            <td class="td-num" style="color:var(--success)">${it.en_bodega||0}</td>
+            <td class="td-num" style="color:var(--info)">${it.en_bodega_aux||0}</td>
+            <td class="td-num" style="color:var(--warn)">${campo}</td>
+            <td class="td-num" style="color:var(--danger)">${it.en_mantenimiento||0}</td>
+            <td><span class="badge ${eb}">${el}</span></td>
+          </tr>`;
+        }).join("");
+      }
+    }
+
+    // ════════════════════════════════════
+    // RENDER REMISIONES
+    // ════════════════════════════════════
+    function remBadge(estado) {
+      switch(estado) {
+        case "activa":    return { cls:"badge-gold",    label:"Activa" };
+        case "retornada": return { cls:"badge-info",    label:"Retornada" };
+        case "pagada":    return { cls:"badge-green",   label:"Pagada" };
+        case "cancelada": return { cls:"badge-red",     label:"Cancelada" };
+        default:          return { cls:"badge-muted",   label:estado||"—" };
+      }
+    }
+
+    function renderRemisiones() {
+      const search = document.getElementById("remSearch").value.toLowerCase();
+      const estF   = document.getElementById("remEstFilter").value;
+
+      const filtered = remisiones.filter(r => {
+        const ms = (r.numero||"").toLowerCase().includes(search) ||
+                   (r.cliente_nombre||"").toLowerCase().includes(search);
+        const me = !estF || r.estado === estF;
+        return ms && me;
+      });
+
+      const tbody = document.getElementById("remTbody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <p>No hay remisiones que coincidan.</p>
+        </div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => {
+        const sd  = remBadge(r.estado);
+        const sv  = Math.max(0,(r.valor_total||0)-(r.abono||0));
+        const sel = r.sellada ? `<span class="badge badge-muted" style="margin-left:4px;">🔒</span>` : "";
+        const mod = r.modalidad_cobro === "dia" ? "Día" : r.modalidad_cobro === "semana" ? "Semana" : "Mes";
+
+        const canEdit    = !r.sellada && r.estado !== "cancelada";
+        const canRetorno = r.estado === "activa" && !r.sellada;
+        const canSeal    = !r.sellada && (r.estado === "retornada" || r.estado === "pagada");
+        const canPagada  = r.estado === "retornada" && !r.sellada;
+        const canCancel  = r.estado === "activa" && !r.sellada;
+
+        return `<tr>
+          <td class="td-mono">${r.numero||"—"}${sel}</td>
+          <td>
+            <strong>${r.cliente_nombre||"—"}</strong>
+            ${r.cliente_telefono ? `<br><span class="td-muted">${r.cliente_telefono}</span>` : ""}
+          </td>
+          <td class="td-muted">${r.conductor||"—"}</td>
+          <td class="td-muted">${fmtDate(r.fecha_salida)}</td>
+          <td class="td-muted">${fmtDate(r.fecha_retorno_estimada)}</td>
+          <td class="td-muted">${mod}</td>
+          <td class="td-num">${fmt(r.valor_total)}</td>
+          <td class="td-num" style="color:${sv>0?"var(--warn)":"var(--success)"}">${fmt(sv)}</td>
+          <td><span class="badge ${sd.cls}">${sd.label}</span></td>
+          <td><div class="td-actions">
+            <button class="btn btn-ghost btn-sm" onclick="printRemision('${r.id}')">🖨</button>
+            ${canEdit    ? `<button class="btn btn-ghost btn-sm"   onclick="editRemision('${r.id}')">Editar</button>` : ""}
+            ${canRetorno ? `<button class="btn btn-info btn-sm"    onclick="openRetorno('${r.id}')">Retorno</button>` : ""}
+            ${canPagada  ? `<button class="btn btn-success btn-sm" onclick="marcarPagada('${r.id}')">Pagada</button>` : ""}
+            ${canSeal    ? `<button class="btn btn-warn btn-sm"    onclick="openSeal('${r.id}','${(r.numero||"").replace(/'/g,"\\'")}')">Sellar</button>` : ""}
+            ${canCancel  ? `<button class="btn btn-danger btn-sm"  onclick="cancelarRemision('${r.id}')">Cancelar</button>` : ""}
+          </div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    document.getElementById("remSearch").addEventListener("input", renderRemisiones);
+    document.getElementById("remEstFilter").addEventListener("change", renderRemisiones);
+
+    // ════════════════════════════════════
+    // MODAL REMISIÓN — abrir / cerrar
+    // ════════════════════════════════════
+    function clearRemModal() {
+      ["remId","remNumero","remClienteNombre","remClienteTel","remDireccion",
+       "remConductor","remFechaSalida","remFechaRetorno","remNotas",
+       "remValorTotal","remAbono"].forEach(id => document.getElementById(id).value = "");
+      document.getElementById("remEstado").value    = "activa";
+      document.getElementById("remModalidad").value = "dia";
+      remItems = [];
+      renderRemItemsList();
+      recalcSaldo();
+    }
+
+    function openRemModal() { document.getElementById("overlayRem").classList.add("open"); }
+    function closeRemModal() {
+      document.getElementById("overlayRem").classList.remove("open");
+      clearRemModal();
+    }
+
+    document.getElementById("btnNuevaRemision").addEventListener("click", () => {
+      document.getElementById("modalRemTitle").textContent = "Nueva remisión";
+      clearRemModal();
+      openRemModal();
+    });
+    document.getElementById("closeModalRem").addEventListener("click", closeRemModal);
+    document.getElementById("cancelModalRem").addEventListener("click", closeRemModal);
+    document.getElementById("overlayRem").addEventListener("click", e => { if(e.target===e.currentTarget) closeRemModal(); });
+
+    // ─── Edit remisión ───
+    window.editRemision = function(id) {
+      const r = remisiones.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById("modalRemTitle").textContent = "Editar remisión";
+      document.getElementById("remId").value               = id;
+      document.getElementById("remNumero").value           = r.numero            || "";
+      document.getElementById("remClienteNombre").value    = r.cliente_nombre    || "";
+      document.getElementById("remClienteTel").value       = r.cliente_telefono  || "";
+      document.getElementById("remDireccion").value        = r.direccion         || "";
+      document.getElementById("remConductor").value        = r.conductor         || "";
+      document.getElementById("remModalidad").value        = r.modalidad_cobro   || "dia";
+      document.getElementById("remFechaSalida").value      = r.fecha_salida      || "";
+      document.getElementById("remFechaRetorno").value     = r.fecha_retorno_estimada || "";
+      document.getElementById("remValorTotal").value       = r.valor_total       ?? "";
+      document.getElementById("remAbono").value            = r.abono             ?? "";
+      document.getElementById("remNotas").value            = r.notas             || "";
+      document.getElementById("remEstado").value           = r.estado            || "activa";
+      remItems = r.items ? JSON.parse(JSON.stringify(r.items)) : [];
+      renderRemItemsList();
+      recalcSaldo();
+      openRemModal();
+    };
+
+    // ─── Picker de ítems ───
+    function renderPickerItems() {
+      const sel = document.getElementById("pickerItem");
+      const cur = sel.value;
+      sel.innerHTML = `<option value="">Seleccionar elemento...</option>` +
+        items.filter(it => it.estado === "activo")
+          .map(it => `<option value="${it.id}">${it.codigo ? it.codigo+" — " : ""}${it.nombre}</option>`)
+          .join("");
+      if (cur) sel.value = cur;
+    }
+
+    document.getElementById("btnAddItem").addEventListener("click", () => {
+      const itemId  = document.getElementById("pickerItem").value;
+      const cant    = parseInt(document.getElementById("pickerCantidad").value) || 0;
+      const origen  = document.getElementById("pickerOrigen").value;
+      if (!itemId)  { toast("Selecciona un elemento.", "err"); return; }
+      if (cant <= 0){ toast("La cantidad debe ser mayor a 0.", "err"); return; }
+      const it = items.find(x => x.id === itemId);
+      if (!it) return;
+
+      // Verificar stock disponible
+      const disponible = origen === "principal" ? (it.en_bodega||0) : (it.en_bodega_aux||0);
+      // Descontar lo que ya está en remItems para este ítem+origen
+      const yaUsado = remItems.filter(x => x.item_id === itemId && x.origen === origen)
+                               .reduce((s,x) => s+x.cantidad_salida, 0);
+      if (cant > disponible - yaUsado) {
+        toast(`Stock insuficiente en bodega ${origen}. Disponible: ${disponible - yaUsado}`, "err");
+        return;
+      }
+
+      // Si ya existe el mismo ítem+origen, sumar cantidad
+      const existing = remItems.find(x => x.item_id === itemId && x.origen === origen);
+      if (existing) {
+        existing.cantidad_salida += cant;
+      } else {
+        remItems.push({
+          item_id: itemId,
+          nombre: it.nombre,
+          codigo: it.codigo || "",
+          unidad: it.unidad || "pieza",
+          cantidad_salida: cant,
+          origen,
+          cantidad_retorno: 0,
+          defectuosas: 0
+        });
+      }
+      document.getElementById("pickerItem").value     = "";
+      document.getElementById("pickerCantidad").value = "";
+      renderRemItemsList();
+    });
+
+    function renderRemItemsList() {
+      const container = document.getElementById("remItemsList");
+      if (!remItems.length) {
+        container.innerHTML = `<div class="items-list-empty" style="background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;padding:16px;text-align:center;color:var(--muted);font-size:13px;">Sin ítems añadidos aún.</div>`;
+        return;
+      }
+      container.innerHTML = `
+        <div class="items-list">
+          <div class="items-list-header">
+            <span>Elemento</span><span>Cant.</span><span>Origen</span><span>Unidad</span><span></span>
+          </div>
+          ${remItems.map((it,i) => `
+            <div class="items-list-row">
+              <span>${it.codigo ? it.codigo+" — " : ""}${it.nombre}</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;">${it.cantidad_salida}</span>
+              <span class="td-muted">${it.origen==="principal"?"Principal":"Auxiliar"}</span>
+              <span class="td-muted">${it.unidad}</span>
+              <button class="item-remove" onclick="removeRemItem(${i})">✕</button>
+            </div>
+          `).join("")}
+        </div>`;
+    }
+
+    window.removeRemItem = function(i) {
+      remItems.splice(i,1);
+      renderRemItemsList();
+    };
+
+    // ─── Saldo calculado ───
+    function recalcSaldo() {
+      const total  = parseFloat(document.getElementById("remValorTotal").value) || 0;
+      const abono  = parseFloat(document.getElementById("remAbono").value)      || 0;
+      const saldo  = Math.max(0, total - abono);
+      document.getElementById("saldoTotal").textContent    = fmt(total);
+      document.getElementById("saldoAbono").textContent    = fmt(abono);
+      document.getElementById("saldoPendiente").textContent= fmt(saldo);
+    }
+    document.getElementById("remValorTotal").addEventListener("input", recalcSaldo);
+    document.getElementById("remAbono").addEventListener("input", recalcSaldo);
+
+    // ─── Guardar remisión ───
+    document.getElementById("saveRem").addEventListener("click", async () => {
+      const id             = document.getElementById("remId").value;
+      const numero         = document.getElementById("remNumero").value.trim();
+      const cliente_nombre = document.getElementById("remClienteNombre").value.trim();
+      const cliente_tel    = document.getElementById("remClienteTel").value.trim();
+      const direccion      = document.getElementById("remDireccion").value.trim();
+      const conductor      = document.getElementById("remConductor").value.trim();
+      const modalidad      = document.getElementById("remModalidad").value;
+      const fecha_salida   = document.getElementById("remFechaSalida").value;
+      const fecha_retorno  = document.getElementById("remFechaRetorno").value;
+      const valor_total    = parseFloat(document.getElementById("remValorTotal").value) || 0;
+      const abono          = parseFloat(document.getElementById("remAbono").value)      || 0;
+      const notas          = document.getElementById("remNotas").value.trim();
+      const estado         = document.getElementById("remEstado").value;
+
+      if (!numero)         { toast("El número de remisión es obligatorio.", "err"); return; }
+      if (!cliente_nombre) { toast("El nombre del cliente es obligatorio.", "err"); return; }
+      if (!fecha_salida)   { toast("La fecha de salida es obligatoria.", "err"); return; }
+      if (!remItems.length){ toast("Agrega al menos un ítem a la remisión.", "err"); return; }
+
+      const data = {
+        numero, cliente_nombre, cliente_telefono: cliente_tel,
+        direccion, conductor, modalidad_cobro: modalidad,
+        fecha_salida, fecha_retorno_estimada: fecha_retorno,
+        valor_total, abono, estado, notas,
+        items: remItems,
+        updatedAt: serverTimestamp()
+      };
+
+      try {
+        const batch = writeBatch(db);
+
+        if (id) {
+          // Edición: revertir stock anterior y aplicar nuevo
+          const prev = remisiones.find(x => x.id === id);
+          if (prev && prev.items) {
+            for (const pi of prev.items) {
+              const ref = doc(db, "inventario", pi.item_id);
+              const field = pi.origen === "principal" ? "en_bodega" : "en_bodega_aux";
+              batch.update(ref, { [field]: increment(pi.cantidad_salida) });
+            }
+          }
+          // Descontar nuevos
+          for (const ni of remItems) {
+            const ref = doc(db, "inventario", ni.item_id);
+            const field = ni.origen === "principal" ? "en_bodega" : "en_bodega_aux";
+            batch.update(ref, { [field]: increment(-ni.cantidad_salida) });
+          }
+          batch.update(doc(db, "remisiones", id), data);
+          await batch.commit();
+          toast("Remisión actualizada ✓");
+        } else {
+          // Nueva: descontar stock
+          data.createdAt = serverTimestamp();
+          data.sellada   = false;
+          const newRef = doc(collection(db, "remisiones"));
+          batch.set(newRef, data);
+          for (const ni of remItems) {
+            const ref = doc(db, "inventario", ni.item_id);
+            const field = ni.origen === "principal" ? "en_bodega" : "en_bodega_aux";
+            batch.update(ref, { [field]: increment(-ni.cantidad_salida) });
+          }
+          await batch.commit();
+          toast("Remisión creada ✓");
+        }
+        closeRemModal();
+      } catch(e) { console.error(e); toast("Error al guardar remisión.", "err"); }
+    });
+
+    // ════════════════════════════════════
+    // RETORNO
+    // ════════════════════════════════════
+    window.openRetorno = function(id) {
+      const r = remisiones.find(x => x.id === id);
+      if (!r || !r.items?.length) { toast("Esta remisión no tiene ítems.", "warn"); return; }
+      document.getElementById("retornoRemId").value = id;
+      document.getElementById("retornoNotas").value = "";
+
+      const container = document.getElementById("retornoItemsList");
+      container.innerHTML = r.items.map((it, i) => `
+        <div class="retorno-item">
+          <div class="retorno-item-name">${it.codigo ? it.codigo+" — ":""} ${it.nombre}</div>
+          <div class="retorno-item-meta">Despachados: <strong>${it.cantidad_salida}</strong> | Origen: ${it.origen==="principal"?"Bodega principal":"Bodega auxiliar"}</div>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Cantidad retornada</label>
+              <input class="form-input" type="number" id="ret_cant_${i}" min="0" max="${it.cantidad_salida}" value="${it.cantidad_salida}" placeholder="0" />
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Defectuosas (→ mant.)</label>
+              <input class="form-input" type="number" id="ret_def_${i}" min="0" value="0" placeholder="0" />
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      document.getElementById("overlayRetorno").classList.add("open");
+    };
+
+    document.getElementById("closeModalRetorno").addEventListener("click", () => document.getElementById("overlayRetorno").classList.remove("open"));
+    document.getElementById("cancelRetorno").addEventListener("click",     () => document.getElementById("overlayRetorno").classList.remove("open"));
+    document.getElementById("overlayRetorno").addEventListener("click", e => { if(e.target===e.currentTarget) document.getElementById("overlayRetorno").classList.remove("open"); });
+
+    document.getElementById("confirmRetorno").addEventListener("click", async () => {
+      const remId = document.getElementById("retornoRemId").value;
+      const r = remisiones.find(x => x.id === remId);
+      if (!r) return;
+
+      const notas = document.getElementById("retornoNotas").value.trim();
+      const batch = writeBatch(db);
+
+      const updatedItems = r.items.map((it, i) => {
+        const retCant = parseInt(document.getElementById(`ret_cant_${i}`)?.value) || 0;
+        const defect  = parseInt(document.getElementById(`ret_def_${i}`)?.value)  || 0;
+        const buenos  = Math.max(0, retCant - defect);
+        const field   = it.origen === "principal" ? "en_bodega" : "en_bodega_aux";
+        const ref     = doc(db, "inventario", it.item_id);
+
+        // Reingresar buenos a bodega de origen
+        if (buenos > 0) batch.update(ref, { [field]: increment(buenos) });
+        // Defectuosas van a mantenimiento (incrementar en_mantenimiento)
+        if (defect > 0) batch.update(ref, { en_mantenimiento: increment(defect) });
+
+        return { ...it, cantidad_retorno: retCant, defectuosas: defect };
+      });
+
+      batch.update(doc(db, "remisiones", remId), {
+        items: updatedItems,
+        estado: "retornada",
+        notas_retorno: notas,
+        fecha_retorno_real: new Date().toISOString().split("T")[0],
+        updatedAt: serverTimestamp()
+      });
+
+      try {
+        await batch.commit();
+        toast("Retorno registrado ✓");
+        document.getElementById("overlayRetorno").classList.remove("open");
+      } catch(e) { console.error(e); toast("Error al registrar retorno.", "err"); }
+    });
+
+    // ════════════════════════════════════
+    // SELLAR
+    // ════════════════════════════════════
+    window.openSeal = function(id, numero) {
+      sealId = id;
+      document.getElementById("sealNumero").textContent = numero;
+      document.getElementById("overlaySeal").classList.add("open");
+    };
+    document.getElementById("closeModalSeal").addEventListener("click", () => { document.getElementById("overlaySeal").classList.remove("open"); sealId=null; });
+    document.getElementById("cancelSeal").addEventListener("click",     () => { document.getElementById("overlaySeal").classList.remove("open"); sealId=null; });
+    document.getElementById("confirmSeal").addEventListener("click", async () => {
+      if (!sealId) return;
+      try {
+        await updateDoc(doc(db, "remisiones", sealId), { sellada: true, updatedAt: serverTimestamp() });
+        toast("Remisión sellada 🔒");
+        document.getElementById("overlaySeal").classList.remove("open");
+        sealId = null;
+      } catch(e) { toast("Error al sellar.", "err"); }
+    });
+
+    // ════════════════════════════════════
+    // MARCAR PAGADA
+    // ════════════════════════════════════
+    window.marcarPagada = async function(id) {
+      try {
+        await updateDoc(doc(db, "remisiones", id), { estado:"pagada", updatedAt: serverTimestamp() });
+        toast("Remisión marcada como pagada ✓");
+      } catch(e) { toast("Error.", "err"); }
+    };
+
+    // ════════════════════════════════════
+    // CANCELAR REMISIÓN (devuelve stock)
+    // ════════════════════════════════════
+    window.cancelarRemision = async function(id) {
+      if (!confirm("¿Cancelar esta remisión? El stock será devuelto al inventario.")) return;
+      const r = remisiones.find(x => x.id === id);
+      if (!r) return;
+      try {
+        const batch = writeBatch(db);
+        (r.items||[]).forEach(it => {
+          const field = it.origen === "principal" ? "en_bodega" : "en_bodega_aux";
+          batch.update(doc(db, "inventario", it.item_id), { [field]: increment(it.cantidad_salida) });
+        });
+        batch.update(doc(db, "remisiones", id), { estado:"cancelada", updatedAt: serverTimestamp() });
+        await batch.commit();
+        toast("Remisión cancelada. Stock devuelto.");
+      } catch(e) { toast("Error al cancelar.", "err"); }
+    };
+
+    // ════════════════════════════════════
+    // IMPRIMIR REMISIÓN
+    // ════════════════════════════════════
+    window.printRemision = function(id) {
+      const r = remisiones.find(x => x.id === id);
+      if (!r) return;
+      const saldo = Math.max(0,(r.valor_total||0)-(r.abono||0));
+      const mod   = r.modalidad_cobro==="dia"?"Por día":r.modalidad_cobro==="semana"?"Por semana":"Por mes";
+
+      const itemsHtml = (r.items||[]).map(it => `
+        <tr>
+          <td>${it.codigo||""}</td>
+          <td>${it.nombre}</td>
+          <td style="text-align:center;">${it.cantidad_salida}</td>
+          <td>${it.unidad}</td>
+          <td>${it.origen==="principal"?"Principal":"Auxiliar"}</td>
+        </tr>
+      `).join("");
+
+      const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/>
+      <title>Remisión ${r.numero||""} — El Progreso</title>
+      <style>
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:32px;max-width:720px;margin:auto;}
+        h1{font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-bottom:2px;}
+        .sub{font-size:11px;color:#666;margin-bottom:20px;}
+        .header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;border-bottom:2px solid #111;padding-bottom:14px;}
+        .numero{font-size:28px;font-weight:900;color:#c4841b;}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+        .block label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:3px;}
+        .block p{font-size:13px;font-weight:600;}
+        table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+        thead th{background:#f0f0f0;padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:1px;border:1px solid #ddd;}
+        tbody td{padding:8px 10px;border:1px solid #ddd;}
+        .totales{background:#f9f9f9;border:1px solid #ddd;border-radius:6px;padding:14px 18px;margin-bottom:20px;}
+        .totales-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;}
+        .totales-row.total{font-weight:700;font-size:15px;border-top:1px solid #ccc;margin-top:6px;padding-top:8px;}
+        .saldo-val{color:#c4841b;font-size:18px;font-weight:900;}
+        .notas{font-size:12px;color:#555;border-top:1px dashed #ccc;padding-top:12px;}
+        .firmas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:32px;}
+        .firma-line{border-top:1px solid #111;padding-top:6px;text-align:center;font-size:11px;color:#555;}
+        .badge-estado{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:#ffe8b0;color:#7a4e00;}
+        @media print{@page{margin:20mm;}}
+      </style></head><body>
+      <div class="header-row">
+        <div>
+          <h1>Andamios El Progreso</h1>
+          <div class="sub">Remisión de equipos</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="numero">${r.numero||"—"}</div>
+          <div style="font-size:11px;color:#666;margin-top:4px;">
+            <span class="badge-estado">${r.estado?.toUpperCase()||""}</span>
+            ${r.sellada ? " 🔒 SELLADA" : ""}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div class="block" style="margin-bottom:10px;"><label>Cliente</label><p>${r.cliente_nombre||"—"}</p></div>
+          <div class="block" style="margin-bottom:10px;"><label>Teléfono</label><p>${r.cliente_telefono||"—"}</p></div>
+          <div class="block"><label>Dirección de obra</label><p>${r.direccion||"—"}</p></div>
+        </div>
+        <div>
+          <div class="block" style="margin-bottom:10px;"><label>Conductor</label><p>${r.conductor||"—"}</p></div>
+          <div class="block" style="margin-bottom:10px;"><label>Fecha de salida</label><p>${fmtDate(r.fecha_salida)}</p></div>
+          <div class="block"><label>Retorno estimado</label><p>${fmtDate(r.fecha_retorno_estimada)}</p></div>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Código</th><th>Elemento</th><th style="text-align:center;">Cant.</th><th>Unidad</th><th>Origen</th></tr></thead>
+        <tbody>${itemsHtml}</tbody>
+      </table>
+
+      <div class="totales">
+        <div class="totales-row"><span>Modalidad de cobro</span><span>${mod}</span></div>
+        <div class="totales-row"><span>Valor total</span><span>${fmt(r.valor_total)}</span></div>
+        <div class="totales-row"><span>Abono recibido</span><span>${fmt(r.abono)}</span></div>
+        <div class="totales-row total"><span>Saldo pendiente</span><span class="saldo-val">${fmt(saldo)}</span></div>
+      </div>
+
+      ${r.notas ? `<div class="notas"><strong>Notas:</strong> ${r.notas}</div>` : ""}
+      ${r.notas_retorno ? `<div class="notas" style="margin-top:8px;"><strong>Notas de retorno:</strong> ${r.notas_retorno}</div>` : ""}
+
+      <div class="firmas">
+        <div class="firma-line">Firma del conductor / despachador</div>
+        <div class="firma-line">Firma del cliente</div>
+      </div>
+
+      <script>window.onload=()=>window.print();<\/script>
+      </body></html>`;
+
+      const win = window.open("","_blank");
+      win.document.write(html);
+      win.document.close();
+    };
+
+    // ════════════════════════════════════
+    // INVENTARIO
+    // ════════════════════════════════════
     function renderInventario() {
       const search = document.getElementById("invSearch").value.toLowerCase();
       const catF   = document.getElementById("invCatFilter").value;
@@ -536,7 +1462,7 @@
 
       const tbody = document.getElementById("invTbody");
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="11"><div class="empty-state">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           <p>No hay elementos que coincidan.</p>
           <button class="btn btn-primary" onclick="document.getElementById('btnNuevoItem').click()">
@@ -548,9 +1474,9 @@
       }
 
       tbody.innerHTML = filtered.map(it => {
-        const campo = Math.max(0, (it.stock_total||0) - (it.en_bodega||0));
-        const eb = it.estado === "activo" ? "badge-green" : it.estado === "mantenimiento" ? "badge-warn" : "badge-red";
-        const el = it.estado === "activo" ? "Activo" : it.estado === "mantenimiento" ? "Mantenim." : "Baja";
+        const campo = Math.max(0,(it.stock_total||0)-(it.en_bodega||0)-(it.en_bodega_aux||0)-(it.en_mantenimiento||0));
+        const eb = it.estado==="activo"?"badge-green":it.estado==="mantenimiento"?"badge-warn":"badge-red";
+        const el = it.estado==="activo"?"Activo":it.estado==="mantenimiento"?"Mantenim.":"Baja";
         return `<tr>
           <td class="td-mono">${it.codigo||"—"}</td>
           <td><strong>${it.nombre||"—"}</strong>${it.notas?`<br><span class="td-muted">${it.notas}</span>`:""}</td>
@@ -558,71 +1484,24 @@
           <td class="td-muted">${it.unidad||"—"}</td>
           <td class="td-num">${it.stock_total||0}</td>
           <td class="td-num" style="color:var(--success)">${it.en_bodega||0}</td>
+          <td class="td-num" style="color:var(--info)">${it.en_bodega_aux||0}</td>
           <td class="td-num" style="color:var(--warn)">${campo}</td>
+          <td class="td-num" style="color:var(--danger)">${it.en_mantenimiento||0}</td>
           <td><span class="badge ${eb}">${el}</span></td>
           <td><div class="td-actions">
             <button class="btn btn-ghost btn-sm" onclick="editItem('${it.id}')">Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="askDelete('${it.id}','${(it.nombre||"").replace(/'/g,"\\'")}')">Eliminar</button>
+            <button class="btn btn-danger btn-sm" onclick="askDelete('${it.id}','${(it.nombre||"").replace(/'/g,"\\'")}','item')">Eliminar</button>
           </div></td>
         </tr>`;
       }).join("");
     }
 
-    // RENDER DASHBOARD
-    function renderDashboard() {
-      document.getElementById("kpi-bodega").textContent = items.reduce((s,it) => s+(it.en_bodega||0), 0);
-      document.getElementById("kpi-mant").textContent   = items.filter(it => it.estado === "mantenimiento").length;
-
-      const tbody  = document.getElementById("dash-inv-tbody");
-      const recent = items.slice(0, 5);
-      if (!recent.length) {
-        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>Sin elementos en inventario aún.</p></div></td></tr>`;
-        return;
-      }
-      tbody.innerHTML = recent.map(it => {
-        const campo = Math.max(0, (it.stock_total||0) - (it.en_bodega||0));
-        const eb = it.estado === "activo" ? "badge-green" : it.estado === "mantenimiento" ? "badge-warn" : "badge-red";
-        const el = it.estado === "activo" ? "Activo" : it.estado === "mantenimiento" ? "Mantenim." : "Baja";
-        return `<tr>
-          <td class="td-mono">${it.codigo||"—"}</td>
-          <td>${it.nombre||"—"}</td>
-          <td class="td-muted">${it.categoria||"—"}</td>
-          <td class="td-num" style="color:var(--success)">${it.en_bodega||0}</td>
-          <td class="td-num" style="color:var(--warn)">${campo}</td>
-          <td><span class="badge ${eb}">${el}</span></td>
-        </tr>`;
-      }).join("");
-    }
-
-    // CAT SELECTS
-    function renderCatSelects() {
-      const opts = categorias.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join("");
-      const sel  = document.getElementById("itemCategoria");
-      const cur  = sel.value;
-      sel.innerHTML = `<option value="">Seleccionar...</option>${opts}`;
-      if (cur) sel.value = cur;
-      const flt  = document.getElementById("invCatFilter");
-      const curF = flt.value;
-      flt.innerHTML = `<option value="">Todas las categorías</option>${opts}`;
-      if (curF) flt.value = curF;
-    }
-
-    // CAT LIST
-    function renderCatList() {
-      const list = document.getElementById("catList");
-      if (!categorias.length) { list.innerHTML = `<div class="cat-empty">No hay categorías aún.</div>`; return; }
-      list.innerHTML = categorias.map(c => `
-        <div class="cat-row">
-          <span>${c.nombre}</span>
-          <button class="btn btn-danger btn-sm" onclick="deleteCat('${c.id}','${c.nombre.replace(/'/g,"\\'")}')">Eliminar</button>
-        </div>`).join("");
-    }
-
-    // MODAL ITEM
+    // ─── Modal item ───
     function openModalItem()  { document.getElementById("overlayItem").classList.add("open"); }
     function closeModalItem() {
       document.getElementById("overlayItem").classList.remove("open");
-      ["itemId","itemCodigo","itemNombre","itemNotas","itemTotal","itemBodega"].forEach(id => document.getElementById(id).value = "");
+      ["itemId","itemCodigo","itemNombre","itemNotas","itemTotal","itemBodega","itemBodegaAux","itemMantenimiento"]
+        .forEach(id => document.getElementById(id).value = "");
       document.getElementById("itemCategoria").value = "";
       document.getElementById("itemUnidad").value    = "pieza";
       document.getElementById("itemEstado").value    = "activo";
@@ -632,43 +1511,45 @@
     document.getElementById("btnNuevoItem").addEventListener("click", openModalItem);
     document.getElementById("closeModalItem").addEventListener("click", closeModalItem);
     document.getElementById("cancelModalItem").addEventListener("click", closeModalItem);
-    document.getElementById("overlayItem").addEventListener("click", e => { if (e.target===e.currentTarget) closeModalItem(); });
+    document.getElementById("overlayItem").addEventListener("click", e => { if(e.target===e.currentTarget) closeModalItem(); });
 
-    // EDIT ITEM
     window.editItem = function(id) {
       const it = items.find(i => i.id === id);
       if (!it) return;
-      document.getElementById("modalItemTitle").textContent  = "Editar elemento";
-      document.getElementById("itemId").value       = id;
-      document.getElementById("itemCodigo").value   = it.codigo    || "";
-      document.getElementById("itemNombre").value   = it.nombre    || "";
-      document.getElementById("itemCategoria").value= it.categoria || "";
-      document.getElementById("itemUnidad").value   = it.unidad    || "pieza";
-      document.getElementById("itemEstado").value   = it.estado    || "activo";
-      document.getElementById("itemTotal").value    = it.stock_total ?? "";
-      document.getElementById("itemBodega").value   = it.en_bodega  ?? "";
-      document.getElementById("itemNotas").value    = it.notas     || "";
+      document.getElementById("modalItemTitle").textContent   = "Editar elemento";
+      document.getElementById("itemId").value                 = id;
+      document.getElementById("itemCodigo").value             = it.codigo           || "";
+      document.getElementById("itemNombre").value             = it.nombre           || "";
+      document.getElementById("itemCategoria").value          = it.categoria        || "";
+      document.getElementById("itemUnidad").value             = it.unidad           || "pieza";
+      document.getElementById("itemEstado").value             = it.estado           || "activo";
+      document.getElementById("itemTotal").value              = it.stock_total      ?? "";
+      document.getElementById("itemBodega").value             = it.en_bodega        ?? "";
+      document.getElementById("itemBodegaAux").value          = it.en_bodega_aux    ?? "";
+      document.getElementById("itemMantenimiento").value      = it.en_mantenimiento ?? "";
+      document.getElementById("itemNotas").value              = it.notas            || "";
       openModalItem();
     };
 
-    // SAVE ITEM
     document.getElementById("saveItem").addEventListener("click", async () => {
-      const id       = document.getElementById("itemId").value;
-      const nombre   = document.getElementById("itemNombre").value.trim();
-      const codigo   = document.getElementById("itemCodigo").value.trim();
-      const categoria= document.getElementById("itemCategoria").value;
-      const unidad   = document.getElementById("itemUnidad").value;
-      const estado   = document.getElementById("itemEstado").value;
-      const total    = parseInt(document.getElementById("itemTotal").value)  || 0;
-      const bodega   = parseInt(document.getElementById("itemBodega").value) || 0;
-      const notas    = document.getElementById("itemNotas").value.trim();
+      const id          = document.getElementById("itemId").value;
+      const nombre      = document.getElementById("itemNombre").value.trim();
+      const codigo      = document.getElementById("itemCodigo").value.trim();
+      const categoria   = document.getElementById("itemCategoria").value;
+      const unidad      = document.getElementById("itemUnidad").value;
+      const estado      = document.getElementById("itemEstado").value;
+      const total       = parseInt(document.getElementById("itemTotal").value)          || 0;
+      const bodega      = parseInt(document.getElementById("itemBodega").value)         || 0;
+      const bodegaAux   = parseInt(document.getElementById("itemBodegaAux").value)      || 0;
+      const mant        = parseInt(document.getElementById("itemMantenimiento").value)   || 0;
+      const notas       = document.getElementById("itemNotas").value.trim();
 
       if (!nombre)    { toast("El nombre es obligatorio.", "err"); return; }
       if (!categoria) { toast("Selecciona una categoría.", "err"); return; }
-      if (bodega > total) { toast("Bodega no puede superar el stock total.", "err"); return; }
+      if (bodega + bodegaAux + mant > total) { toast("La suma de bodega + auxiliar + mantenimiento no puede superar el stock total.", "err"); return; }
 
-      const data = { codigo, nombre, categoria, unidad, estado, stock_total:total, en_bodega:bodega, notas, updatedAt:serverTimestamp() };
-
+      const data = { codigo, nombre, categoria, unidad, estado, stock_total:total,
+                     en_bodega:bodega, en_bodega_aux:bodegaAux, en_mantenimiento:mant, notas, updatedAt:serverTimestamp() };
       try {
         if (id) {
           await setDoc(doc(db, "inventario", id), data, { merge:true });
@@ -679,13 +1560,15 @@
           toast("Elemento agregado ✓");
         }
         closeModalItem();
-      } catch(e) { console.error(e); toast("Error al guardar. Intenta de nuevo.", "err"); }
+      } catch(e) { console.error(e); toast("Error al guardar.", "err"); }
     });
 
-    // DELETE ITEM
-    window.askDelete = function(id, nombre) {
-      deleteId = id;
-      document.getElementById("delNombre").textContent = nombre;
+    // ─── Eliminar (genérico) ───
+    window.askDelete = function(id, nombre, type = "item") {
+      deleteId   = id;
+      deleteType = type;
+      document.getElementById("delNombre").textContent    = nombre;
+      document.getElementById("delModalTitle").textContent = type === "item" ? "Eliminar elemento" : "Eliminar remisión";
       document.getElementById("overlayDel").classList.add("open");
     };
     document.getElementById("closeModalDel").addEventListener("click", () => { document.getElementById("overlayDel").classList.remove("open"); deleteId=null; });
@@ -693,19 +1576,20 @@
     document.getElementById("confirmDel").addEventListener("click", async () => {
       if (!deleteId) return;
       try {
-        await deleteDoc(doc(db, "inventario", deleteId));
-        toast("Elemento eliminado.");
+        const col = deleteType === "item" ? "inventario" : "remisiones";
+        await deleteDoc(doc(db, col, deleteId));
+        toast(deleteType === "item" ? "Elemento eliminado." : "Remisión eliminada.");
         document.getElementById("overlayDel").classList.remove("open");
         deleteId = null;
       } catch(e) { toast("Error al eliminar.", "err"); }
     });
 
-    // MODAL CATEGORÍAS
+    // ─── Categorías ───
     document.getElementById("btnGestionarCats").addEventListener("click", () => document.getElementById("overlayCats").classList.add("open"));
     const closeCats = () => document.getElementById("overlayCats").classList.remove("open");
     document.getElementById("closeModalCats").addEventListener("click", closeCats);
     document.getElementById("closeCatsBtn").addEventListener("click",   closeCats);
-    document.getElementById("overlayCats").addEventListener("click", e => { if (e.target===e.currentTarget) closeCats(); });
+    document.getElementById("overlayCats").addEventListener("click", e => { if(e.target===e.currentTarget) closeCats(); });
 
     document.getElementById("btnAddCat").addEventListener("click", async () => {
       const nombre = document.getElementById("newCatNombre").value.trim();
@@ -726,14 +1610,34 @@
       } catch(e) { toast("Error al eliminar categoría.", "err"); }
     };
 
-    // FILTROS
+    function renderCatSelects() {
+      const opts = categorias.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join("");
+      const sel  = document.getElementById("itemCategoria");
+      const cur  = sel.value;
+      sel.innerHTML = `<option value="">Seleccionar...</option>${opts}`;
+      if (cur) sel.value = cur;
+      const flt  = document.getElementById("invCatFilter");
+      const curF = flt.value;
+      flt.innerHTML = `<option value="">Todas las categorías</option>${opts}`;
+      if (curF) flt.value = curF;
+    }
+
+    function renderCatList() {
+      const list = document.getElementById("catList");
+      if (!categorias.length) { list.innerHTML = `<div class="cat-empty">No hay categorías aún.</div>`; return; }
+      list.innerHTML = categorias.map(c => `
+        <div class="cat-row">
+          <span>${c.nombre}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteCat('${c.id}','${c.nombre.replace(/'/g,"\\'")}')">Eliminar</button>
+        </div>`).join("");
+    }
+
     document.getElementById("invSearch").addEventListener("input",    renderInventario);
     document.getElementById("invCatFilter").addEventListener("change", renderInventario);
-
-    // ENTER en nueva categoría
     document.getElementById("newCatNombre").addEventListener("keydown", e => {
       if (e.key === "Enter") document.getElementById("btnAddCat").click();
     });
+
   </script>
 </body>
 </html>
