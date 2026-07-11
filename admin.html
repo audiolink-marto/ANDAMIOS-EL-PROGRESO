@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central v4</title>
+  <title>Admin — El Progreso Central v4.2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -194,6 +194,13 @@
     .coming-soon h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);}
     .coming-soon p{font-size:13px;max-width:300px;}
 
+    /* PAGO INFO BOX */
+    .pago-info-box{background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;padding:14px 18px;margin-bottom:18px;}
+    .pago-info-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px;border-bottom:1px solid var(--brd);}
+    .pago-info-row:last-child{border-bottom:none;}
+    .pago-info-row label{font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);}
+    .pago-info-row span{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;}
+
     /* TOAST */
     .toast{position:fixed;bottom:24px;right:24px;background:var(--surf-3);border:1px solid var(--brd);border-radius:8px;padding:12px 18px;font-size:13px;color:var(--txt);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:999;transform:translateY(80px);opacity:0;transition:all .25s ease;display:flex;align-items:center;gap:10px;max-width:320px;}
     .toast.show{transform:translateY(0);opacity:1;}
@@ -206,6 +213,24 @@
     .saldo-item{display:flex;flex-direction:column;gap:3px;}
     .saldo-item label{font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);}
     .saldo-item span{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;}
+
+    /* REPORTES */
+    .periodo-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+    .periodo-btn{padding:7px 16px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--trans);}
+    .periodo-btn:hover{background:var(--surf-2);color:var(--txt);}
+    .periodo-btn.active{background:var(--gold-bg);border-color:var(--gold-brd);color:var(--gold);}
+    .periodo-custom{display:none;align-items:center;gap:8px;flex-wrap:wrap;}
+    .periodo-custom.show{display:flex;}
+    .rep-totals-row{background:var(--surf-2);border-top:2px solid var(--brd);font-weight:700;}
+    .rep-totals-row td{color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:16px;}
+    .top-rank{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--brd);}
+    .top-rank:last-child{border-bottom:none;}
+    .top-rank-num{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--faint);width:32px;text-align:center;flex-shrink:0;}
+    .top-rank-num.gold{color:var(--gold);}
+    .top-rank-info{flex:1;}
+    .top-rank-name{font-weight:600;font-size:14px;}
+    .top-rank-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+    .top-rank-val{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:var(--success);}
 
     /* PRINT */
     @media print {
@@ -424,21 +449,144 @@
       <!-- ═══════════════ PAGOS ═══════════════ -->
       <div class="section" id="sec-pagos">
         <div class="section-title">Pagos</div>
-        <div class="section-sub">Registro de cobros y cartera</div>
-        <div class="panel"><div class="coming-soon">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          <h3>Próximamente</h3><p>Se activa cuando las remisiones estén en marcha.</p>
-        </div></div>
+        <div class="section-sub">Historial de cobros y cartera</div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card green">
+            <div class="kpi-label">Total cobrado</div>
+            <div class="kpi-value green" id="kpi-pagos-cobrado">—</div>
+            <div class="kpi-hint">Suma de todos los pagos registrados</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">Saldo pendiente</div>
+            <div class="kpi-value warn" id="kpi-pagos-saldo">—</div>
+            <div class="kpi-hint">Cartera activa por cobrar</div>
+          </div>
+          <div class="kpi-card info">
+            <div class="kpi-label">Pagos registrados</div>
+            <div class="kpi-value info" id="kpi-pagos-count">—</div>
+            <div class="kpi-hint">Transacciones en el historial</div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="pagosSearch" placeholder="Buscar por # remisión o cliente..." />
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Remisión</th><th>Cliente</th><th>Monto</th><th>Fecha</th><th>Notas</th></tr>
+              </thead>
+              <tbody id="pagosTbody">
+                <tr><td colspan="5"><div class="empty-state">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  <p>No hay pagos registrados aún.</p>
+                </div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- ═══════════════ REPORTES ═══════════════ -->
       <div class="section" id="sec-reportes">
         <div class="section-title">Reportes</div>
-        <div class="section-sub">Análisis y exportación de datos</div>
-        <div class="panel"><div class="coming-soon">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          <h3>Próximamente</h3><p>Disponible cuando haya datos en el sistema.</p>
-        </div></div>
+        <div class="section-sub">Análisis por período</div>
+
+        <!-- Selector de período -->
+        <div class="periodo-bar">
+          <button class="periodo-btn active" data-periodo="semana">Esta semana</button>
+          <button class="periodo-btn" data-periodo="mes">Este mes</button>
+          <button class="periodo-btn" data-periodo="año">Este año</button>
+          <button class="periodo-btn" data-periodo="custom">Personalizado</button>
+          <div class="periodo-custom" id="periodoCustom">
+            <input class="form-input" type="date" id="periodoDesde" style="width:150px;padding:7px 10px;" />
+            <span style="color:var(--muted);font-size:13px;">→</span>
+            <input class="form-input" type="date" id="periodoHasta" style="width:150px;padding:7px 10px;" />
+            <button class="btn btn-primary btn-sm" id="btnAplicarPeriodo">Aplicar</button>
+          </div>
+          <div style="flex:1;"></div>
+          <button class="btn btn-ghost" id="btnPrintReporte">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Imprimir reporte
+          </button>
+        </div>
+
+        <!-- KPIs del período -->
+        <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
+          <div class="kpi-card gold">
+            <div class="kpi-label">Remisiones</div>
+            <div class="kpi-value gold" id="rep-kpi-rems">—</div>
+            <div class="kpi-hint">Creadas en el período</div>
+          </div>
+          <div class="kpi-card info">
+            <div class="kpi-label">Facturado</div>
+            <div class="kpi-value info" id="rep-kpi-facturado">—</div>
+            <div class="kpi-hint">Valor total generado</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label">Cobrado</div>
+            <div class="kpi-value green" id="rep-kpi-cobrado">—</div>
+            <div class="kpi-hint">Pagos registrados</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">Pendiente</div>
+            <div class="kpi-value warn" id="rep-kpi-saldo">—</div>
+            <div class="kpi-hint">Saldo por cobrar</div>
+          </div>
+        </div>
+
+        <!-- Tabla remisiones del período -->
+        <div class="panel" style="margin-bottom:20px;">
+          <div class="panel-header">
+            <div class="panel-title">Remisiones del período</div>
+            <span class="badge badge-muted" id="rep-rem-count">0</span>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>#</th><th>Cliente</th><th>Salida</th><th>Modalidad</th><th>Valor</th><th>Cobrado</th><th>Saldo</th><th>Estado</th></tr>
+              </thead>
+              <tbody id="repRemTbody">
+                <tr><td colspan="8"><div class="empty-state"><p>Sin datos para el período.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tabla pagos del período -->
+        <div class="panel" style="margin-bottom:20px;">
+          <div class="panel-header">
+            <div class="panel-title">Pagos del período</div>
+            <span class="badge badge-muted" id="rep-pag-count">0</span>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Remisión</th><th>Cliente</th><th>Monto</th><th>Fecha</th><th>Notas</th></tr>
+              </thead>
+              <tbody id="repPagTbody">
+                <tr><td colspan="5"><div class="empty-state"><p>Sin pagos en el período.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top clientes -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Top clientes — período</div>
+          </div>
+          <div id="repTopClientes">
+            <div class="empty-state"><p>Sin datos para el período.</p></div>
+          </div>
+        </div>
+
       </div>
 
     </div><!-- /content -->
@@ -592,6 +740,66 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" id="cancelModalRem">Cancelar</button>
         <button class="btn btn-primary" id="saveRem">Guardar remisión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: REGISTRAR PAGO ═══════════ -->
+  <div class="overlay" id="overlayPago">
+    <div class="modal" style="max-width:460px;">
+      <div class="modal-header">
+        <div class="modal-title">Registrar pago</div>
+        <button class="modal-close" id="closeModalPago">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="pagoRemId" />
+
+        <!-- Resumen de la remisión -->
+        <div class="pago-info-box">
+          <div class="pago-info-row">
+            <label>Remisión</label>
+            <span id="pagoInfoNumero" style="color:var(--gold);"></span>
+          </div>
+          <div class="pago-info-row">
+            <label>Cliente</label>
+            <span id="pagoInfoCliente" style="font-size:15px;font-family:'Inter',sans-serif;font-weight:600;"></span>
+          </div>
+          <div class="pago-info-row">
+            <label>Valor total</label>
+            <span id="pagoInfoTotal" style="color:var(--txt);"></span>
+          </div>
+          <div class="pago-info-row">
+            <label>Ya abonado</label>
+            <span id="pagoInfoAbono" style="color:var(--success);"></span>
+          </div>
+          <div class="pago-info-row">
+            <label>Saldo pendiente</label>
+            <span id="pagoInfoSaldo" style="color:var(--warn);"></span>
+          </div>
+        </div>
+
+        <hr class="form-divider" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Monto del pago ($)</label>
+            <input class="form-input" type="number" id="pagoMonto" min="1" placeholder="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha</label>
+            <input class="form-input" type="date" id="pagoFecha" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas (opcional)</label>
+          <textarea class="form-textarea" id="pagoNotas" placeholder="Efectivo, transferencia, cheque..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelPago">Cancelar</button>
+        <button class="btn btn-success" id="confirmPago">Registrar pago</button>
       </div>
     </div>
   </div>
@@ -798,10 +1006,11 @@
     let items      = [];
     let categorias = [];
     let remisiones = [];
+    let pagos      = [];
     let deleteId   = null;
-    let deleteType = "item"; // "item" | "remision"
+    let deleteType = "item";
     let sealId     = null;
-    let remItems   = []; // ítems del modal de remisión en edición
+    let remItems   = [];
     let toastTimer = null;
 
     // ─── Helpers ───
@@ -871,6 +1080,15 @@
           .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
         renderRemisiones();
         renderDashboard();
+        renderPagos(); // actualiza KPI saldo pendiente en pagos
+        renderReportes();
+      });
+
+      onSnapshot(collection(db, "pagos"), snap => {
+        pagos = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+        renderPagos();
+        renderReportes();
       });
     }
 
@@ -983,7 +1201,7 @@
         const canEdit    = !r.sellada && r.estado !== "cancelada";
         const canRetorno = r.estado === "activa" && !r.sellada;
         const canSeal    = !r.sellada && (r.estado === "retornada" || r.estado === "pagada");
-        const canPagada  = r.estado === "retornada" && !r.sellada;
+        const canPago    = (r.estado === "activa" || r.estado === "retornada") && !r.sellada && sv > 0;
         const canCancel  = r.estado === "activa" && !r.sellada;
 
         return `<tr>
@@ -1003,7 +1221,7 @@
             <button class="btn btn-ghost btn-sm" onclick="printRemision('${r.id}')">🖨</button>
             ${canEdit    ? `<button class="btn btn-ghost btn-sm"   onclick="editRemision('${r.id}')">Editar</button>` : ""}
             ${canRetorno ? `<button class="btn btn-info btn-sm"    onclick="openRetorno('${r.id}')">Retorno</button>` : ""}
-            ${canPagada  ? `<button class="btn btn-success btn-sm" onclick="marcarPagada('${r.id}')">Pagada</button>` : ""}
+            ${canPago    ? `<button class="btn btn-success btn-sm" onclick="openPago('${r.id}')">$ Pago</button>` : ""}
             ${canSeal    ? `<button class="btn btn-warn btn-sm"    onclick="openSeal('${r.id}','${(r.numero||"").replace(/'/g,"\\'")}')">Sellar</button>` : ""}
             ${canCancel  ? `<button class="btn btn-danger btn-sm"  onclick="cancelarRemision('${r.id}')">Cancelar</button>` : ""}
           </div></td>
@@ -1013,6 +1231,47 @@
 
     document.getElementById("remSearch").addEventListener("input", renderRemisiones);
     document.getElementById("remEstFilter").addEventListener("change", renderRemisiones);
+
+    // ════════════════════════════════════
+    // RENDER PAGOS
+    // ════════════════════════════════════
+    function renderPagos() {
+      // KPIs
+      const totalCobrado   = pagos.reduce((s,p) => s + (p.monto||0), 0);
+      const saldoPendiente = remisiones
+        .filter(r => r.estado !== "cancelada" && r.estado !== "pagada")
+        .reduce((s,r) => s + Math.max(0,(r.valor_total||0)-(r.abono||0)), 0);
+
+      document.getElementById("kpi-pagos-cobrado").textContent = fmt(totalCobrado);
+      document.getElementById("kpi-pagos-saldo").textContent   = fmt(saldoPendiente);
+      document.getElementById("kpi-pagos-count").textContent   = pagos.length;
+
+      // Tabla
+      const search   = document.getElementById("pagosSearch").value.toLowerCase();
+      const filtered = pagos.filter(p =>
+        (p.remision_numero||"").toLowerCase().includes(search) ||
+        (p.cliente_nombre||"").toLowerCase().includes(search)
+      );
+
+      const tbody = document.getElementById("pagosTbody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <p>No hay pagos registrados aún.</p>
+        </div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => `<tr>
+        <td class="td-mono">${p.remision_numero||"—"}</td>
+        <td><strong>${p.cliente_nombre||"—"}</strong></td>
+        <td class="td-num" style="color:var(--success)">${fmt(p.monto)}</td>
+        <td class="td-muted">${fmtDate(p.fecha)}</td>
+        <td class="td-muted">${p.notas||"—"}</td>
+      </tr>`).join("");
+    }
+
+    document.getElementById("pagosSearch").addEventListener("input", renderPagos);
 
     // ════════════════════════════════════
     // MODAL REMISIÓN — abrir / cerrar
@@ -1087,9 +1346,7 @@
       const it = items.find(x => x.id === itemId);
       if (!it) return;
 
-      // Verificar stock disponible
       const disponible = origen === "principal" ? (it.en_bodega||0) : (it.en_bodega_aux||0);
-      // Descontar lo que ya está en remItems para este ítem+origen
       const yaUsado = remItems.filter(x => x.item_id === itemId && x.origen === origen)
                                .reduce((s,x) => s+x.cantidad_salida, 0);
       if (cant > disponible - yaUsado) {
@@ -1097,7 +1354,6 @@
         return;
       }
 
-      // Si ya existe el mismo ítem+origen, sumar cantidad
       const existing = remItems.find(x => x.item_id === itemId && x.origen === origen);
       if (existing) {
         existing.cantidad_salida += cant;
@@ -1277,9 +1533,7 @@
         const field   = it.origen === "principal" ? "en_bodega" : "en_bodega_aux";
         const ref     = doc(db, "inventario", it.item_id);
 
-        // Reingresar buenos a bodega de origen
         if (buenos > 0) batch.update(ref, { [field]: increment(buenos) });
-        // Defectuosas van a mantenimiento (incrementar en_mantenimiento)
         if (defect > 0) batch.update(ref, { en_mantenimiento: increment(defect) });
 
         return { ...it, cantidad_retorno: retCant, defectuosas: defect };
@@ -1321,14 +1575,75 @@
     });
 
     // ════════════════════════════════════
-    // MARCAR PAGADA
+    // REGISTRAR PAGO
     // ════════════════════════════════════
-    window.marcarPagada = async function(id) {
-      try {
-        await updateDoc(doc(db, "remisiones", id), { estado:"pagada", updatedAt: serverTimestamp() });
-        toast("Remisión marcada como pagada ✓");
-      } catch(e) { toast("Error.", "err"); }
+    window.openPago = function(id) {
+      const r = remisiones.find(x => x.id === id);
+      if (!r) return;
+      const saldo = Math.max(0, (r.valor_total||0) - (r.abono||0));
+      document.getElementById("pagoRemId").value              = id;
+      document.getElementById("pagoInfoNumero").textContent   = r.numero || "—";
+      document.getElementById("pagoInfoCliente").textContent  = r.cliente_nombre || "—";
+      document.getElementById("pagoInfoTotal").textContent    = fmt(r.valor_total);
+      document.getElementById("pagoInfoAbono").textContent    = fmt(r.abono);
+      document.getElementById("pagoInfoSaldo").textContent    = fmt(saldo);
+      document.getElementById("pagoMonto").value              = "";
+      document.getElementById("pagoFecha").value              = new Date().toISOString().split("T")[0];
+      document.getElementById("pagoNotas").value              = "";
+      document.getElementById("overlayPago").classList.add("open");
     };
+
+    const closePagoModal = () => {
+      document.getElementById("overlayPago").classList.remove("open");
+    };
+    document.getElementById("closeModalPago").addEventListener("click", closePagoModal);
+    document.getElementById("cancelPago").addEventListener("click",     closePagoModal);
+    document.getElementById("overlayPago").addEventListener("click", e => { if(e.target===e.currentTarget) closePagoModal(); });
+
+    document.getElementById("confirmPago").addEventListener("click", async () => {
+      const id    = document.getElementById("pagoRemId").value;
+      const monto = parseFloat(document.getElementById("pagoMonto").value) || 0;
+      const fecha = document.getElementById("pagoFecha").value;
+      const notas = document.getElementById("pagoNotas").value.trim();
+
+      if (!id) return;
+      const r = remisiones.find(x => x.id === id);
+      if (!r) return;
+
+      const saldo = Math.max(0, (r.valor_total||0) - (r.abono||0));
+
+      if (monto <= 0)      { toast("El monto debe ser mayor a $0.", "err"); return; }
+      if (monto > saldo)   { toast(`El monto supera el saldo pendiente (${fmt(saldo)}).`, "err"); return; }
+      if (!fecha)          { toast("La fecha es obligatoria.", "err"); return; }
+
+      const nuevoAbono  = (r.abono||0) + monto;
+      const cierraSaldo = nuevoAbono >= (r.valor_total||0);
+
+      try {
+        const batch = writeBatch(db);
+
+        // Registrar en colección pagos
+        const pagoRef = doc(collection(db, "pagos"));
+        batch.set(pagoRef, {
+          remision_id:     id,
+          remision_numero: r.numero     || "",
+          cliente_nombre:  r.cliente_nombre || "",
+          monto,
+          fecha,
+          notas,
+          createdAt: serverTimestamp()
+        });
+
+        // Actualizar abono en remisión
+        const remUpdate = { abono: increment(monto), updatedAt: serverTimestamp() };
+        if (cierraSaldo) remUpdate.estado = "pagada";
+        batch.update(doc(db, "remisiones", id), remUpdate);
+
+        await batch.commit();
+        toast(cierraSaldo ? "Saldo cerrado. Remisión marcada como Pagada ✓" : "Pago registrado ✓");
+        closePagoModal();
+      } catch(e) { console.error(e); toast("Error al registrar pago.", "err"); }
+    });
 
     // ════════════════════════════════════
     // CANCELAR REMISIÓN (devuelve stock)
@@ -1636,6 +1951,284 @@
     document.getElementById("invCatFilter").addEventListener("change", renderInventario);
     document.getElementById("newCatNombre").addEventListener("keydown", e => {
       if (e.key === "Enter") document.getElementById("btnAddCat").click();
+    });
+
+    // ════════════════════════════════════
+    // REPORTES
+    // ════════════════════════════════════
+    let periodoActivo = "semana";
+    let periodoDesdeCustom = null;
+    let periodoHastaCustom = null;
+
+    function calcPeriodo() {
+      const hoy = new Date();
+      hoy.setHours(23,59,59,999);
+      let desde = new Date();
+      desde.setHours(0,0,0,0);
+
+      if (periodoActivo === "semana") {
+        const dia = desde.getDay(); // 0=dom
+        desde.setDate(desde.getDate() - (dia === 0 ? 6 : dia - 1));
+      } else if (periodoActivo === "mes") {
+        desde.setDate(1);
+      } else if (periodoActivo === "año") {
+        desde.setMonth(0,1);
+      } else if (periodoActivo === "custom" && periodoDesdeCustom && periodoHastaCustom) {
+        desde = new Date(periodoDesdeCustom + "T00:00:00");
+        hoy.setTime(new Date(periodoHastaCustom + "T23:59:59").getTime());
+      }
+      return { desde, hasta: hoy };
+    }
+
+    function fechaEnPeriodo(fechaStr, desde, hasta) {
+      if (!fechaStr) return false;
+      const f = new Date(fechaStr + "T00:00:00");
+      return f >= desde && f <= hasta;
+    }
+
+    function renderReportes() {
+      const { desde, hasta } = calcPeriodo();
+
+      // Filtrar remisiones por fecha_salida dentro del período
+      const remsDelPeriodo = remisiones.filter(r =>
+        fechaEnPeriodo(r.fecha_salida, desde, hasta)
+      );
+
+      // Filtrar pagos por fecha dentro del período
+      const pagosDelPeriodo = pagos.filter(p =>
+        fechaEnPeriodo(p.fecha, desde, hasta)
+      );
+
+      // ── KPIs ──
+      const totalFacturado = remsDelPeriodo
+        .filter(r => r.estado !== "cancelada")
+        .reduce((s,r) => s + (r.valor_total||0), 0);
+      const totalCobradoPeriodo = pagosDelPeriodo.reduce((s,p) => s + (p.monto||0), 0);
+      const totalSaldo = remsDelPeriodo
+        .filter(r => r.estado !== "cancelada" && r.estado !== "pagada")
+        .reduce((s,r) => s + Math.max(0,(r.valor_total||0)-(r.abono||0)), 0);
+
+      document.getElementById("rep-kpi-rems").textContent      = remsDelPeriodo.length;
+      document.getElementById("rep-kpi-facturado").textContent = fmt(totalFacturado);
+      document.getElementById("rep-kpi-cobrado").textContent   = fmt(totalCobradoPeriodo);
+      document.getElementById("rep-kpi-saldo").textContent     = fmt(totalSaldo);
+
+      // ── Tabla remisiones ──
+      document.getElementById("rep-rem-count").textContent = remsDelPeriodo.length + " registros";
+      const remTbody = document.getElementById("repRemTbody");
+      if (!remsDelPeriodo.length) {
+        remTbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>Sin remisiones en el período.</p></div></td></tr>`;
+      } else {
+        const totalV = remsDelPeriodo.filter(r=>r.estado!=="cancelada").reduce((s,r)=>s+(r.valor_total||0),0);
+        const totalA = remsDelPeriodo.filter(r=>r.estado!=="cancelada").reduce((s,r)=>s+(r.abono||0),0);
+        const totalS = remsDelPeriodo.filter(r=>r.estado!=="cancelada"&&r.estado!=="pagada").reduce((s,r)=>s+Math.max(0,(r.valor_total||0)-(r.abono||0)),0);
+        const mod = m => m==="dia"?"Día":m==="semana"?"Semana":"Mes";
+        remTbody.innerHTML = remsDelPeriodo.map(r => {
+          const sv  = Math.max(0,(r.valor_total||0)-(r.abono||0));
+          const sd  = remBadge(r.estado);
+          return `<tr>
+            <td class="td-mono">${r.numero||"—"}</td>
+            <td><strong>${r.cliente_nombre||"—"}</strong></td>
+            <td class="td-muted">${fmtDate(r.fecha_salida)}</td>
+            <td class="td-muted">${mod(r.modalidad_cobro)}</td>
+            <td class="td-num">${fmt(r.valor_total)}</td>
+            <td class="td-num" style="color:var(--success)">${fmt(r.abono)}</td>
+            <td class="td-num" style="color:${sv>0?"var(--warn)":"var(--success)"}">${fmt(sv)}</td>
+            <td><span class="badge ${sd.cls}">${sd.label}</span></td>
+          </tr>`;
+        }).join("") + `
+        <tr class="rep-totals-row">
+          <td colspan="4" style="padding:11px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);">Totales del período</td>
+          <td class="td-num" style="color:var(--gold);padding:11px 16px;">${fmt(totalV)}</td>
+          <td class="td-num" style="color:var(--success);padding:11px 16px;">${fmt(totalA)}</td>
+          <td class="td-num" style="color:var(--warn);padding:11px 16px;">${fmt(totalS)}</td>
+          <td></td>
+        </tr>`;
+      }
+
+      // ── Tabla pagos ──
+      document.getElementById("rep-pag-count").textContent = pagosDelPeriodo.length + " registros";
+      const pagTbody = document.getElementById("repPagTbody");
+      if (!pagosDelPeriodo.length) {
+        pagTbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Sin pagos en el período.</p></div></td></tr>`;
+      } else {
+        const totalP = pagosDelPeriodo.reduce((s,p)=>s+(p.monto||0),0);
+        pagTbody.innerHTML = pagosDelPeriodo.map(p => `<tr>
+          <td class="td-mono">${p.remision_numero||"—"}</td>
+          <td><strong>${p.cliente_nombre||"—"}</strong></td>
+          <td class="td-num" style="color:var(--success)">${fmt(p.monto)}</td>
+          <td class="td-muted">${fmtDate(p.fecha)}</td>
+          <td class="td-muted">${p.notas||"—"}</td>
+        </tr>`).join("") + `
+        <tr class="rep-totals-row">
+          <td colspan="2" style="padding:11px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);">Total cobrado</td>
+          <td class="td-num" style="color:var(--success);padding:11px 16px;">${fmt(totalP)}</td>
+          <td colspan="2"></td>
+        </tr>`;
+      }
+
+      // ── Top clientes ──
+      const mapaClientes = {};
+      remsDelPeriodo.filter(r => r.estado !== "cancelada").forEach(r => {
+        const k = r.cliente_nombre || "Sin nombre";
+        if (!mapaClientes[k]) mapaClientes[k] = { nombre: k, facturado: 0, remisiones: 0, cobrado: 0 };
+        mapaClientes[k].facturado  += (r.valor_total||0);
+        mapaClientes[k].cobrado    += (r.abono||0);
+        mapaClientes[k].remisiones += 1;
+      });
+      const ranking = Object.values(mapaClientes).sort((a,b) => b.facturado - a.facturado).slice(0,8);
+      const topEl = document.getElementById("repTopClientes");
+      if (!ranking.length) {
+        topEl.innerHTML = `<div class="empty-state"><p>Sin datos para el período.</p></div>`;
+      } else {
+        topEl.innerHTML = ranking.map((c, i) => `
+          <div class="top-rank">
+            <div class="top-rank-num ${i===0?"gold":""}">${i+1}</div>
+            <div class="top-rank-info">
+              <div class="top-rank-name">${c.nombre}</div>
+              <div class="top-rank-meta">${c.remisiones} remisión${c.remisiones!==1?"es":""} · Cobrado: ${fmt(c.cobrado)}</div>
+            </div>
+            <div class="top-rank-val">${fmt(c.facturado)}</div>
+          </div>
+        `).join("");
+      }
+    }
+
+    // ── Controles de período ──
+    document.querySelectorAll(".periodo-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".periodo-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        periodoActivo = btn.dataset.periodo;
+        const custom = document.getElementById("periodoCustom");
+        if (periodoActivo === "custom") {
+          custom.classList.add("show");
+        } else {
+          custom.classList.remove("show");
+          renderReportes();
+        }
+      });
+    });
+
+    document.getElementById("btnAplicarPeriodo").addEventListener("click", () => {
+      periodoDesdeCustom = document.getElementById("periodoDesde").value;
+      periodoHastaCustom = document.getElementById("periodoHasta").value;
+      if (!periodoDesdeCustom || !periodoHastaCustom) { toast("Selecciona ambas fechas.", "err"); return; }
+      if (periodoDesdeCustom > periodoHastaCustom)    { toast("La fecha inicio debe ser anterior al fin.", "err"); return; }
+      renderReportes();
+    });
+
+    // ── Imprimir reporte ──
+    document.getElementById("btnPrintReporte").addEventListener("click", () => {
+      const { desde, hasta } = calcPeriodo();
+      const remsDelPeriodo   = remisiones.filter(r => fechaEnPeriodo(r.fecha_salida, desde, hasta));
+      const pagosDelPeriodo  = pagos.filter(p => fechaEnPeriodo(p.fecha, desde, hasta));
+
+      const fmtP = n => "$" + (n||0).toLocaleString("es-CO");
+      const fmtD = s => s ? s.split("-").reverse().join("/") : "—";
+      const labelPeriodo = periodoActivo === "semana" ? "Esta semana"
+                         : periodoActivo === "mes"    ? "Este mes"
+                         : periodoActivo === "año"    ? "Este año"
+                         : `${fmtD(periodoDesdeCustom)} → ${fmtD(periodoHastaCustom)}`;
+
+      const totalV   = remsDelPeriodo.filter(r=>r.estado!=="cancelada").reduce((s,r)=>s+(r.valor_total||0),0);
+      const totalA   = remsDelPeriodo.filter(r=>r.estado!=="cancelada").reduce((s,r)=>s+(r.abono||0),0);
+      const totalS   = remsDelPeriodo.filter(r=>r.estado!=="cancelada"&&r.estado!=="pagada").reduce((s,r)=>s+Math.max(0,(r.valor_total||0)-(r.abono||0)),0);
+      const totalP   = pagosDelPeriodo.reduce((s,p)=>s+(p.monto||0),0);
+      const mod = m => m==="dia"?"Día":m==="semana"?"Semana":"Mes";
+
+      const mapaClientes = {};
+      remsDelPeriodo.filter(r=>r.estado!=="cancelada").forEach(r => {
+        const k = r.cliente_nombre||"Sin nombre";
+        if (!mapaClientes[k]) mapaClientes[k] = { nombre:k, facturado:0, remisiones:0, cobrado:0 };
+        mapaClientes[k].facturado  += (r.valor_total||0);
+        mapaClientes[k].cobrado    += (r.abono||0);
+        mapaClientes[k].remisiones += 1;
+      });
+      const ranking = Object.values(mapaClientes).sort((a,b)=>b.facturado-a.facturado).slice(0,8);
+
+      const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/>
+      <title>Reporte ${labelPeriodo} — El Progreso</title>
+      <style>
+        *{box-sizing:border-box;margin:0;padding:0;}
+        body{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:28px;max-width:800px;margin:auto;}
+        h1{font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:2px;}
+        .sub{font-size:11px;color:#666;margin-bottom:20px;}
+        .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+        .kpi{border:1px solid #ddd;border-radius:6px;padding:12px;text-align:center;}
+        .kpi label{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;}
+        .kpi span{font-size:18px;font-weight:900;}
+        h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:18px 0 8px;border-bottom:1px solid #eee;padding-bottom:6px;}
+        table{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11px;}
+        thead th{background:#f4f4f4;padding:7px 9px;text-align:left;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border:1px solid #ddd;}
+        tbody td{padding:7px 9px;border:1px solid #eee;}
+        .tot{background:#fffbe8;font-weight:700;border-top:2px solid #ddd;}
+        .rank-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #eee;}
+        .rank-row:last-child{border-bottom:none;}
+        .rank-n{font-size:20px;font-weight:900;color:#ccc;width:26px;text-align:center;}
+        .rank-n.g{color:#c4841b;}
+        .rank-info{flex:1;}
+        .rank-val{font-size:16px;font-weight:900;color:#2a7a4f;}
+        .header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;border-bottom:2px solid #111;padding-bottom:12px;}
+        @media print{@page{margin:15mm;}}
+      </style></head><body>
+      <div class="header-row">
+        <div><h1>Andamios El Progreso</h1><div class="sub">Reporte de período</div></div>
+        <div style="text-align:right;"><div style="font-size:18px;font-weight:900;color:#c4841b;">${labelPeriodo}</div>
+        <div style="font-size:10px;color:#888;margin-top:2px;">Generado: ${new Date().toLocaleDateString("es-CO")}</div></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><label>Remisiones</label><span>${remsDelPeriodo.length}</span></div>
+        <div class="kpi"><label>Facturado</label><span style="color:#1a5fa8;">${fmtP(totalV)}</span></div>
+        <div class="kpi"><label>Cobrado</label><span style="color:#2a7a4f;">${fmtP(totalA)}</span></div>
+        <div class="kpi"><label>Pendiente</label><span style="color:#c4841b;">${fmtP(totalS)}</span></div>
+      </div>
+      <h2>Remisiones del período (${remsDelPeriodo.length})</h2>
+      <table>
+        <thead><tr><th>#</th><th>Cliente</th><th>Salida</th><th>Modalidad</th><th>Valor</th><th>Cobrado</th><th>Saldo</th><th>Estado</th></tr></thead>
+        <tbody>
+          ${remsDelPeriodo.map(r=>{
+            const sv=Math.max(0,(r.valor_total||0)-(r.abono||0));
+            return `<tr>
+              <td>${r.numero||"—"}</td><td>${r.cliente_nombre||"—"}</td>
+              <td>${fmtD(r.fecha_salida)}</td><td>${mod(r.modalidad_cobro)}</td>
+              <td>${fmtP(r.valor_total)}</td><td>${fmtP(r.abono)}</td>
+              <td>${fmtP(sv)}</td><td>${r.estado||"—"}</td>
+            </tr>`;
+          }).join("")}
+          <tr class="tot">
+            <td colspan="4">Totales</td>
+            <td>${fmtP(totalV)}</td><td>${fmtP(totalA)}</td><td>${fmtP(totalS)}</td><td></td>
+          </tr>
+        </tbody>
+      </table>
+      <h2>Pagos registrados (${pagosDelPeriodo.length})</h2>
+      <table>
+        <thead><tr><th>Remisión</th><th>Cliente</th><th>Monto</th><th>Fecha</th><th>Notas</th></tr></thead>
+        <tbody>
+          ${pagosDelPeriodo.map(p=>`<tr>
+            <td>${p.remision_numero||"—"}</td><td>${p.cliente_nombre||"—"}</td>
+            <td>${fmtP(p.monto)}</td><td>${fmtD(p.fecha)}</td><td>${p.notas||"—"}</td>
+          </tr>`).join("")}
+          <tr class="tot"><td colspan="2">Total cobrado</td><td>${fmtP(totalP)}</td><td colspan="2"></td></tr>
+        </tbody>
+      </table>
+      <h2>Top clientes</h2>
+      ${ranking.map((c,i)=>`
+        <div class="rank-row">
+          <div class="rank-n ${i===0?"g":""}">${i+1}</div>
+          <div class="rank-info">
+            <div style="font-weight:700;">${c.nombre}</div>
+            <div style="font-size:10px;color:#888;">${c.remisiones} remisión${c.remisiones!==1?"es":""} · Cobrado: ${fmtP(c.cobrado)}</div>
+          </div>
+          <div class="rank-val">${fmtP(c.facturado)}</div>
+        </div>`).join("")}
+      <script>window.onload=()=>window.print();<\/script>
+      </body></html>`;
+
+      const win = window.open("","_blank");
+      win.document.write(html);
+      win.document.close();
     });
 
   </script>
