@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central v4.2</title>
+  <title>Admin — El Progreso Central v4.4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -214,6 +214,24 @@
     .saldo-item label{font-size:10px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);}
     .saldo-item span{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;}
 
+    /* ALERTAS */
+    .alertas-panel{background:var(--surf);border:1px solid var(--danger-brd);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+    .alertas-panel.warn-only{border-color:var(--warn-brd);}
+    .alertas-header{padding:13px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .alertas-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+    .alertas-count{background:var(--danger);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;}
+    .alertas-count.warn{background:var(--warn);color:#111;}
+    .alerta-row{display:flex;align-items:center;gap:14px;padding:11px 20px;border-bottom:1px solid var(--brd);transition:background var(--trans);}
+    .alerta-row:last-child{border-bottom:none;}
+    .alerta-row:hover{background:var(--surf-2);}
+    .alerta-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .alerta-dot.red{background:var(--danger);}
+    .alerta-dot.warn{background:var(--warn);}
+    .alerta-info{flex:1;}
+    .alerta-main{font-size:13px;font-weight:600;}
+    .alerta-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+    .alerta-badge{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;white-space:nowrap;}
+
     /* REPORTES */
     .periodo-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
     .periodo-btn{padding:7px 16px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--trans);}
@@ -275,6 +293,18 @@
       <div class="sb-item" data-section="inventario">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         <span class="sb-label">Inventario</span>
+      </div>
+      <div class="sb-item" data-section="clientes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="sb-label">Clientes</span>
+      </div>
+      <div class="sb-item" data-section="mantenimiento">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <span class="sb-label">Mantenimiento</span>
+      </div>
+      <div class="sb-item" data-section="conductores">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <span class="sb-label">Conductores</span>
       </div>
       <div class="sb-item" data-section="pagos">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -348,8 +378,10 @@
           </div>
         </div>
 
+        <!-- Panel de alertas -->
+        <div id="alertasPanel" style="display:none;"></div>
+
         <div class="panel">
-          <div class="panel-header"><div class="panel-title">Remisiones recientes</div></div>
           <div class="tbl-wrap">
             <table>
               <thead><tr><th>#</th><th>Cliente</th><th>Salida</th><th>Retorno est.</th><th>Valor</th><th>Saldo</th><th>Estado</th></tr></thead>
@@ -589,6 +621,107 @@
 
       </div>
 
+      <!-- ═══════════════ CLIENTES ═══════════════ -->
+      <div class="section" id="sec-clientes">
+        <div class="section-title">Clientes</div>
+        <div class="section-sub">Directorio y historial de clientes</div>
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="clienteSearch" placeholder="Buscar por nombre o teléfono..." />
+          </div>
+          <button class="btn btn-primary" id="btnNuevoCliente">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo cliente
+          </button>
+        </div>
+        <div class="panel">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Nombre</th><th>Teléfono</th><th>Dirección</th><th>Remisiones</th><th>Facturado</th><th>Saldo</th><th>Notas</th><th></th></tr></thead>
+              <tbody id="clientesTbody">
+                <tr><td colspan="8"><div class="empty-state"><p>No hay clientes aún.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ MANTENIMIENTO ═══════════════ -->
+      <div class="section" id="sec-mantenimiento">
+        <div class="section-title">Mantenimiento</div>
+        <div class="section-sub">Seguimiento de equipos en reparación</div>
+        <div class="kpi-grid">
+          <div class="kpi-card red">
+            <div class="kpi-label">En proceso</div>
+            <div class="kpi-value red" id="kpi-mant-proceso">—</div>
+            <div class="kpi-hint">Órdenes activas</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-label">Listos para entrega</div>
+            <div class="kpi-value warn" id="kpi-mant-listo">—</div>
+            <div class="kpi-hint">Reparados, pendiente de devolución</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label">Entregados</div>
+            <div class="kpi-value green" id="kpi-mant-entregado">—</div>
+            <div class="kpi-hint">Devueltos al inventario</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="mantSearch" placeholder="Buscar por elemento..." />
+          </div>
+          <select class="filter-sel" id="mantEstFilter">
+            <option value="">Todos los estados</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="listo">Listo</option>
+            <option value="entregado">Entregado</option>
+          </select>
+          <button class="btn btn-primary" id="btnNuevoMant">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva orden
+          </button>
+        </div>
+        <div class="panel">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Elemento</th><th>Cant.</th><th>Entrada</th><th>Salida est.</th><th>Descripción</th><th>Origen</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="mantTbody">
+                <tr><td colspan="8"><div class="empty-state"><p>No hay órdenes de mantenimiento.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ CONDUCTORES ═══════════════ -->
+      <div class="section" id="sec-conductores">
+        <div class="section-title">Conductores</div>
+        <div class="section-sub">Registro y despachos por conductor</div>
+        <div class="toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="conductorSearch" placeholder="Buscar por nombre o cédula..." />
+          </div>
+          <button class="btn btn-primary" id="btnNuevoConductor">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo conductor
+          </button>
+        </div>
+        <div class="panel">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Nombre</th><th>Cédula</th><th>Teléfono</th><th>Placa</th><th>Despachos</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="conductoresTbody">
+                <tr><td colspan="7"><div class="empty-state"><p>No hay conductores registrados.</p></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 
@@ -625,17 +758,25 @@
         <div class="form-section-title">Cliente</div>
 
         <div class="form-group">
-          <label class="form-label">Nombre del cliente</label>
-          <input class="form-input" type="text" id="remClienteNombre" placeholder="Nombre completo o empresa" />
+          <label class="form-label">Seleccionar cliente</label>
+          <select class="form-select" id="remClienteSelect">
+            <option value="">— Nuevo cliente / escribir manualmente —</option>
+          </select>
         </div>
-        <div class="form-row">
+        <div id="remClienteFields">
           <div class="form-group">
-            <label class="form-label">Teléfono</label>
-            <input class="form-input" type="text" id="remClienteTel" placeholder="300 000 0000" />
+            <label class="form-label">Nombre del cliente</label>
+            <input class="form-input" type="text" id="remClienteNombre" placeholder="Nombre completo o empresa" />
           </div>
-          <div class="form-group">
-            <label class="form-label">Dirección de obra</label>
-            <input class="form-input" type="text" id="remDireccion" placeholder="Dirección donde va el equipo" />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Teléfono</label>
+              <input class="form-input" type="text" id="remClienteTel" placeholder="300 000 0000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dirección de obra</label>
+              <input class="form-input" type="text" id="remDireccion" placeholder="Dirección donde va el equipo" />
+            </div>
           </div>
         </div>
 
@@ -645,7 +786,9 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Conductor</label>
-            <input class="form-input" type="text" id="remConductor" placeholder="Nombre del conductor" />
+            <select class="form-select" id="remConductorSelect">
+              <option value="">— Seleccionar conductor —</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label">Modalidad de cobro</label>
@@ -973,6 +1116,149 @@
     </div>
   </div>
 
+  <!-- ═══════════ MODAL: CLIENTE ═══════════ -->
+  <div class="overlay" id="overlayCliente">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalClienteTitle">Nuevo cliente</div>
+        <button class="modal-close" id="closeModalCliente">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="clienteId" />
+        <div class="form-group">
+          <label class="form-label">Nombre / Empresa</label>
+          <input class="form-input" type="text" id="clienteNombre" placeholder="Nombre completo o razón social" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-input" type="text" id="clienteTel" placeholder="300 000 0000" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cédula / NIT</label>
+            <input class="form-input" type="text" id="clienteDoc" placeholder="Documento de identidad" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Dirección</label>
+          <input class="form-input" type="text" id="clienteDireccion" placeholder="Dirección principal" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-textarea" id="clienteNotas" placeholder="Observaciones generales..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelModalCliente">Cancelar</button>
+        <button class="btn btn-primary" id="saveCliente">Guardar cliente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: MANTENIMIENTO ═══════════ -->
+  <div class="overlay" id="overlayMant">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalMantTitle">Nueva orden de mantenimiento</div>
+        <button class="modal-close" id="closeModalMant">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="mantId" />
+        <input type="hidden" id="mantOrigen" value="manual" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Elemento</label>
+            <select class="form-select" id="mantItemSelect"><option value="">Seleccionar elemento...</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cantidad</label>
+            <input class="form-input" type="number" id="mantCantidad" min="1" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Fecha de entrada</label>
+            <input class="form-input" type="date" id="mantFechaEntrada" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Salida estimada</label>
+            <input class="form-input" type="date" id="mantFechaSalida" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="mantEstado">
+            <option value="en_proceso">En proceso</option>
+            <option value="listo">Listo</option>
+            <option value="entregado">Entregado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción del problema / trabajo</label>
+          <textarea class="form-textarea" id="mantDescripcion" placeholder="Descripción del daño o mantenimiento a realizar..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelModalMant">Cancelar</button>
+        <button class="btn btn-primary" id="saveMant">Guardar orden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MODAL: CONDUCTOR ═══════════ -->
+  <div class="overlay" id="overlayConductor">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalConductorTitle">Nuevo conductor</div>
+        <button class="modal-close" id="closeModalConductor">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="conductorId" />
+        <div class="form-group">
+          <label class="form-label">Nombre completo</label>
+          <input class="form-input" type="text" id="conductorNombre" placeholder="Nombre del conductor" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Cédula</label>
+            <input class="form-input" type="text" id="conductorCedula" placeholder="Número de cédula" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input class="form-input" type="text" id="conductorTel" placeholder="300 000 0000" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Placa del vehículo</label>
+            <input class="form-input" type="text" id="conductorPlaca" placeholder="ABC-123" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-select" id="conductorEstado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas</label>
+          <textarea class="form-textarea" id="conductorNotas" placeholder="Observaciones..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelModalConductor">Cancelar</button>
+        <button class="btn btn-primary" id="saveConductor">Guardar conductor</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
@@ -1007,6 +1293,9 @@
     let categorias = [];
     let remisiones = [];
     let pagos      = [];
+    let clientes   = [];
+    let mantenimiento = [];
+    let conductores = [];
     let deleteId   = null;
     let deleteType = "item";
     let sealId     = null;
@@ -1041,7 +1330,7 @@
     });
 
     // ─── Navegación ───
-    const titles = { dashboard:"Dashboard", remisiones:"Remisiones", inventario:"Inventario", pagos:"Pagos", reportes:"Reportes" };
+    const titles = { dashboard:"Dashboard", remisiones:"Remisiones", inventario:"Inventario", clientes:"Clientes", mantenimiento:"Mantenimiento", conductores:"Conductores", pagos:"Pagos", reportes:"Reportes" };
     document.querySelectorAll(".sb-item[data-section]").forEach(item => {
       item.addEventListener("click", () => {
         const sec = item.dataset.section;
@@ -1060,6 +1349,27 @@
 
     // ─── Listeners Firebase ───
     function initListeners() {
+      onSnapshot(collection(db, "clientes"), snap => {
+        clientes = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => (a.nombre||"").localeCompare(b.nombre||""));
+        renderClientes();
+        renderClienteSelects();
+      });
+
+      onSnapshot(collection(db, "mantenimiento"), snap => {
+        mantenimiento = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+        renderMantenimiento();
+        renderDashboard();
+      });
+
+      onSnapshot(collection(db, "conductores"), snap => {
+        conductores = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => (a.nombre||"").localeCompare(b.nombre||""));
+        renderConductores();
+        renderConductorSelects();
+      });
+
       onSnapshot(collection(db, "categorias"), snap => {
         categorias = snap.docs.map(d => ({ id: d.id, ...d.data() }))
           .sort((a,b) => a.nombre.localeCompare(b.nombre));
@@ -1082,6 +1392,7 @@
         renderDashboard();
         renderPagos(); // actualiza KPI saldo pendiente en pagos
         renderReportes();
+        renderAlertas();
       });
 
       onSnapshot(collection(db, "pagos"), snap => {
@@ -1278,10 +1589,13 @@
     // ════════════════════════════════════
     function clearRemModal() {
       ["remId","remNumero","remClienteNombre","remClienteTel","remDireccion",
-       "remConductor","remFechaSalida","remFechaRetorno","remNotas",
+       "remFechaSalida","remFechaRetorno","remNotas",
        "remValorTotal","remAbono"].forEach(id => document.getElementById(id).value = "");
-      document.getElementById("remEstado").value    = "activa";
-      document.getElementById("remModalidad").value = "dia";
+      document.getElementById("remEstado").value          = "activa";
+      document.getElementById("remModalidad").value       = "dia";
+      document.getElementById("remClienteSelect").value   = "";
+      document.getElementById("remConductorSelect").value = "";
+      document.getElementById("remClienteFields").style.display = "block";
       remItems = [];
       renderRemItemsList();
       recalcSaldo();
@@ -1320,6 +1634,10 @@
       document.getElementById("remAbono").value            = r.abono             ?? "";
       document.getElementById("remNotas").value            = r.notas             || "";
       document.getElementById("remEstado").value           = r.estado            || "activa";
+      // conductor: buscar por nombre en la colección
+      const cond = conductores.find(c => c.nombre === r.conductor);
+      document.getElementById("remConductorSelect").value  = cond ? cond.id : "";
+      document.getElementById("remClienteSelect").value    = "";
       remItems = r.items ? JSON.parse(JSON.stringify(r.items)) : [];
       renderRemItemsList();
       recalcSaldo();
@@ -1421,7 +1739,10 @@
       const cliente_nombre = document.getElementById("remClienteNombre").value.trim();
       const cliente_tel    = document.getElementById("remClienteTel").value.trim();
       const direccion      = document.getElementById("remDireccion").value.trim();
-      const conductor      = document.getElementById("remConductor").value.trim();
+      const conductorSel   = document.getElementById("remConductorSelect").value;
+      const conductor      = conductorSel
+        ? (conductores.find(c => c.id === conductorSel)?.nombre || conductorSel)
+        : "";
       const modalidad      = document.getElementById("remModalidad").value;
       const fecha_salida   = document.getElementById("remFechaSalida").value;
       const fecha_retorno  = document.getElementById("remFechaRetorno").value;
@@ -1952,6 +2273,426 @@
     document.getElementById("newCatNombre").addEventListener("keydown", e => {
       if (e.key === "Enter") document.getElementById("btnAddCat").click();
     });
+
+    // ════════════════════════════════════
+    // CLIENTES
+    // ════════════════════════════════════
+    function renderClienteSelects() {
+      const sel = document.getElementById("remClienteSelect");
+      const cur = sel.value;
+      sel.innerHTML = `<option value="">— Nuevo cliente / escribir manualmente —</option>` +
+        clientes.map(c => `<option value="${c.id}">${c.nombre}${c.cliente_tel?" · "+c.cliente_tel:""}</option>`).join("");
+      if (cur) sel.value = cur;
+    }
+
+    document.getElementById("remClienteSelect").addEventListener("change", function() {
+      const id = this.value;
+      const fields = document.getElementById("remClienteFields");
+      if (id) {
+        const c = clientes.find(x => x.id === id);
+        if (c) {
+          document.getElementById("remClienteNombre").value = c.nombre    || "";
+          document.getElementById("remClienteTel").value    = c.telefono  || "";
+          document.getElementById("remDireccion").value     = c.direccion || "";
+          fields.style.display = "none";
+        }
+      } else {
+        document.getElementById("remClienteNombre").value = "";
+        document.getElementById("remClienteTel").value    = "";
+        document.getElementById("remDireccion").value     = "";
+        fields.style.display = "block";
+      }
+    });
+
+    function renderClientes() {
+      const search   = document.getElementById("clienteSearch").value.toLowerCase();
+      const filtered = clientes.filter(c =>
+        (c.nombre||"").toLowerCase().includes(search) ||
+        (c.telefono||"").toLowerCase().includes(search) ||
+        (c.documento||"").toLowerCase().includes(search)
+      );
+      const tbody = document.getElementById("clientesTbody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>No hay clientes que coincidan.</p></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map(c => {
+        const rems    = remisiones.filter(r => r.cliente_nombre === c.nombre);
+        const factura = rems.filter(r=>r.estado!=="cancelada").reduce((s,r)=>s+(r.valor_total||0),0);
+        const saldo   = rems.filter(r=>r.estado!=="cancelada"&&r.estado!=="pagada").reduce((s,r)=>s+Math.max(0,(r.valor_total||0)-(r.abono||0)),0);
+        return `<tr>
+          <td><strong>${c.nombre||"—"}</strong>${c.documento?`<br><span class="td-muted">${c.documento}</span>`:""}</td>
+          <td class="td-muted">${c.telefono||"—"}</td>
+          <td class="td-muted">${c.direccion||"—"}</td>
+          <td class="td-num">${rems.length}</td>
+          <td class="td-num" style="color:var(--info)">${fmt(factura)}</td>
+          <td class="td-num" style="color:${saldo>0?"var(--warn)":"var(--success)"}">${fmt(saldo)}</td>
+          <td class="td-muted">${c.notas||"—"}</td>
+          <td><div class="td-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editCliente('${c.id}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCliente('${c.id}','${(c.nombre||"").replace(/'/g,"\\'")}')">Eliminar</button>
+          </div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    function openModalCliente()  { document.getElementById("overlayCliente").classList.add("open"); }
+    function closeModalCliente() {
+      document.getElementById("overlayCliente").classList.remove("open");
+      ["clienteId","clienteNombre","clienteTel","clienteDoc","clienteDireccion","clienteNotas"]
+        .forEach(id => document.getElementById(id).value = "");
+      document.getElementById("modalClienteTitle").textContent = "Nuevo cliente";
+    }
+
+    document.getElementById("btnNuevoCliente").addEventListener("click",    openModalCliente);
+    document.getElementById("closeModalCliente").addEventListener("click",  closeModalCliente);
+    document.getElementById("cancelModalCliente").addEventListener("click", closeModalCliente);
+    document.getElementById("overlayCliente").addEventListener("click", e => { if(e.target===e.currentTarget) closeModalCliente(); });
+    document.getElementById("clienteSearch").addEventListener("input", renderClientes);
+
+    window.editCliente = function(id) {
+      const c = clientes.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById("modalClienteTitle").textContent = "Editar cliente";
+      document.getElementById("clienteId").value        = id;
+      document.getElementById("clienteNombre").value    = c.nombre    || "";
+      document.getElementById("clienteTel").value       = c.telefono  || "";
+      document.getElementById("clienteDoc").value       = c.documento || "";
+      document.getElementById("clienteDireccion").value = c.direccion || "";
+      document.getElementById("clienteNotas").value     = c.notas     || "";
+      openModalCliente();
+    };
+
+    window.deleteCliente = async function(id, nombre) {
+      if (!confirm(`¿Eliminar el cliente "${nombre}"?`)) return;
+      try { await deleteDoc(doc(db, "clientes", id)); toast("Cliente eliminado."); }
+      catch(e) { toast("Error al eliminar.", "err"); }
+    };
+
+    document.getElementById("saveCliente").addEventListener("click", async () => {
+      const id        = document.getElementById("clienteId").value;
+      const nombre    = document.getElementById("clienteNombre").value.trim();
+      const telefono  = document.getElementById("clienteTel").value.trim();
+      const documento = document.getElementById("clienteDoc").value.trim();
+      const direccion = document.getElementById("clienteDireccion").value.trim();
+      const notas     = document.getElementById("clienteNotas").value.trim();
+      if (!nombre) { toast("El nombre es obligatorio.", "err"); return; }
+      const data = { nombre, telefono, documento, direccion, notas, updatedAt: serverTimestamp() };
+      try {
+        if (id) { await setDoc(doc(db, "clientes", id), data, { merge:true }); toast("Cliente actualizado ✓"); }
+        else    { data.createdAt = serverTimestamp(); await addDoc(collection(db, "clientes"), data); toast("Cliente agregado ✓"); }
+        closeModalCliente();
+      } catch(e) { toast("Error al guardar.", "err"); }
+    });
+
+    // ════════════════════════════════════
+    // MANTENIMIENTO
+    // ════════════════════════════════════
+    function renderMantItemSelect() {
+      const sel = document.getElementById("mantItemSelect");
+      const cur = sel.value;
+      sel.innerHTML = `<option value="">Seleccionar elemento...</option>` +
+        items.filter(it => it.estado === "activo")
+          .map(it => `<option value="${it.id}">${it.codigo?it.codigo+" — ":""}${it.nombre}</option>`)
+          .join("");
+      if (cur) sel.value = cur;
+    }
+
+    function renderMantenimiento() {
+      // KPIs
+      document.getElementById("kpi-mant-proceso").textContent   = mantenimiento.filter(m=>m.estado==="en_proceso").length;
+      document.getElementById("kpi-mant-listo").textContent     = mantenimiento.filter(m=>m.estado==="listo").length;
+      document.getElementById("kpi-mant-entregado").textContent = mantenimiento.filter(m=>m.estado==="entregado").length;
+
+      const search   = document.getElementById("mantSearch").value.toLowerCase();
+      const estF     = document.getElementById("mantEstFilter").value;
+      const filtered = mantenimiento.filter(m => {
+        const ms = (m.item_nombre||"").toLowerCase().includes(search);
+        const me = !estF || m.estado === estF;
+        return ms && me;
+      });
+
+      const tbody = document.getElementById("mantTbody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>No hay órdenes que coincidan.</p></div></td></tr>`;
+        return;
+      }
+      const mantBadge = e => e==="en_proceso"?{cls:"badge-red",label:"En proceso"}:e==="listo"?{cls:"badge-warn",label:"Listo"}:{cls:"badge-green",label:"Entregado"};
+      tbody.innerHTML = filtered.map(m => {
+        const bd = mantBadge(m.estado);
+        return `<tr>
+          <td><strong>${m.item_nombre||"—"}</strong>${m.item_codigo?`<br><span class="td-muted">${m.item_codigo}</span>`:""}</td>
+          <td class="td-num">${m.cantidad||0}</td>
+          <td class="td-muted">${fmtDate(m.fecha_entrada)}</td>
+          <td class="td-muted">${fmtDate(m.fecha_salida_estimada)}</td>
+          <td class="td-muted">${m.descripcion||"—"}</td>
+          <td class="td-muted">${m.origen==="remision"?"Retorno remisión":"Manual"}</td>
+          <td><span class="badge ${bd.cls}">${bd.label}</span></td>
+          <td><div class="td-actions">
+            ${m.estado!=="entregado"?`<button class="btn btn-ghost btn-sm" onclick="editMant('${m.id}')">Editar</button>`:""}
+            ${m.estado==="listo"?`<button class="btn btn-success btn-sm" onclick="entregarMant('${m.id}')">Entregar</button>`:""}
+            <button class="btn btn-danger btn-sm" onclick="deleteMant('${m.id}')">Eliminar</button>
+          </div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    function openModalMant()  { document.getElementById("overlayMant").classList.add("open"); renderMantItemSelect(); }
+    function closeModalMant() {
+      document.getElementById("overlayMant").classList.remove("open");
+      ["mantId","mantCantidad","mantFechaEntrada","mantFechaSalida","mantDescripcion"].forEach(id=>document.getElementById(id).value="");
+      document.getElementById("mantItemSelect").value = "";
+      document.getElementById("mantEstado").value     = "en_proceso";
+      document.getElementById("mantOrigen").value     = "manual";
+      document.getElementById("modalMantTitle").textContent = "Nueva orden de mantenimiento";
+    }
+
+    document.getElementById("btnNuevoMant").addEventListener("click",    openModalMant);
+    document.getElementById("closeModalMant").addEventListener("click",  closeModalMant);
+    document.getElementById("cancelModalMant").addEventListener("click", closeModalMant);
+    document.getElementById("overlayMant").addEventListener("click", e => { if(e.target===e.currentTarget) closeModalMant(); });
+    document.getElementById("mantSearch").addEventListener("input",    renderMantenimiento);
+    document.getElementById("mantEstFilter").addEventListener("change", renderMantenimiento);
+
+    window.editMant = function(id) {
+      const m = mantenimiento.find(x => x.id === id);
+      if (!m) return;
+      document.getElementById("modalMantTitle").textContent  = "Editar orden";
+      document.getElementById("mantId").value                = id;
+      document.getElementById("mantOrigen").value            = m.origen              || "manual";
+      document.getElementById("mantCantidad").value          = m.cantidad            || "";
+      document.getElementById("mantFechaEntrada").value      = m.fecha_entrada       || "";
+      document.getElementById("mantFechaSalida").value       = m.fecha_salida_estimada || "";
+      document.getElementById("mantEstado").value            = m.estado              || "en_proceso";
+      document.getElementById("mantDescripcion").value       = m.descripcion         || "";
+      openModalMant();
+      document.getElementById("mantItemSelect").value        = m.item_id             || "";
+    };
+
+    window.entregarMant = async function(id) {
+      const m = mantenimiento.find(x => x.id === id);
+      if (!m || !confirm(`¿Marcar como entregado y devolver ${m.cantidad} unidad(es) al inventario?`)) return;
+      try {
+        const batch = writeBatch(db);
+        batch.update(doc(db, "mantenimiento", id), { estado:"entregado", fecha_entrega_real: new Date().toISOString().split("T")[0], updatedAt: serverTimestamp() });
+        if (m.item_id) {
+          batch.update(doc(db, "inventario", m.item_id), { en_mantenimiento: increment(-(m.cantidad||0)), en_bodega: increment(m.cantidad||0) });
+        }
+        await batch.commit();
+        toast("Entregado. Stock devuelto al inventario ✓");
+      } catch(e) { toast("Error al entregar.", "err"); }
+    };
+
+    window.deleteMant = async function(id) {
+      if (!confirm("¿Eliminar esta orden?")) return;
+      try { await deleteDoc(doc(db, "mantenimiento", id)); toast("Orden eliminada."); }
+      catch(e) { toast("Error al eliminar.", "err"); }
+    };
+
+    document.getElementById("saveMant").addEventListener("click", async () => {
+      const id         = document.getElementById("mantId").value;
+      const itemId     = document.getElementById("mantItemSelect").value;
+      const cantidad   = parseInt(document.getElementById("mantCantidad").value) || 0;
+      const entrada    = document.getElementById("mantFechaEntrada").value;
+      const salida     = document.getElementById("mantFechaSalida").value;
+      const estado     = document.getElementById("mantEstado").value;
+      const desc       = document.getElementById("mantDescripcion").value.trim();
+      const origen     = document.getElementById("mantOrigen").value;
+
+      if (!itemId)   { toast("Selecciona un elemento.", "err"); return; }
+      if (cantidad<=0){ toast("La cantidad debe ser mayor a 0.", "err"); return; }
+      if (!entrada)  { toast("La fecha de entrada es obligatoria.", "err"); return; }
+
+      const it = items.find(x => x.id === itemId);
+      const data = {
+        item_id: itemId, item_nombre: it?.nombre||"", item_codigo: it?.codigo||"",
+        cantidad, fecha_entrada: entrada, fecha_salida_estimada: salida,
+        estado, descripcion: desc, origen, updatedAt: serverTimestamp()
+      };
+      try {
+        const batch = writeBatch(db);
+        if (id) {
+          batch.update(doc(db, "mantenimiento", id), data);
+        } else {
+          data.createdAt = serverTimestamp();
+          const newRef = doc(collection(db, "mantenimiento"));
+          batch.set(newRef, data);
+          // Descontar del inventario solo si es entrada manual nueva
+          if (it) batch.update(doc(db, "inventario", itemId), { en_bodega: increment(-cantidad), en_mantenimiento: increment(cantidad) });
+        }
+        await batch.commit();
+        toast(id ? "Orden actualizada ✓" : "Orden creada ✓");
+        closeModalMant();
+      } catch(e) { console.error(e); toast("Error al guardar.", "err"); }
+    });
+
+    // ════════════════════════════════════
+    // CONDUCTORES
+    // ════════════════════════════════════
+    function renderConductorSelects() {
+      const sel = document.getElementById("remConductorSelect");
+      const cur = sel.value;
+      sel.innerHTML = `<option value="">— Seleccionar conductor —</option>` +
+        conductores.filter(c=>c.estado==="activo")
+          .map(c => `<option value="${c.id}">${c.nombre}${c.placa?" · "+c.placa:""}</option>`).join("");
+      if (cur) sel.value = cur;
+    }
+
+    function renderConductores() {
+      const search   = document.getElementById("conductorSearch").value.toLowerCase();
+      const filtered = conductores.filter(c =>
+        (c.nombre||"").toLowerCase().includes(search) ||
+        (c.cedula||"").toLowerCase().includes(search)
+      );
+      const tbody = document.getElementById("conductoresTbody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No hay conductores que coincidan.</p></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map(c => {
+        const despachos = remisiones.filter(r => r.conductor === c.nombre).length;
+        const eb = c.estado==="activo"?"badge-green":"badge-red";
+        const el = c.estado==="activo"?"Activo":"Inactivo";
+        return `<tr>
+          <td><strong>${c.nombre||"—"}</strong>${c.notas?`<br><span class="td-muted">${c.notas}</span>`:""}</td>
+          <td class="td-muted">${c.cedula||"—"}</td>
+          <td class="td-muted">${c.telefono||"—"}</td>
+          <td class="td-muted">${c.placa||"—"}</td>
+          <td class="td-num">${despachos}</td>
+          <td><span class="badge ${eb}">${el}</span></td>
+          <td><div class="td-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editConductor('${c.id}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteConductor('${c.id}','${(c.nombre||"").replace(/'/g,"\\'")}')">Eliminar</button>
+          </div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    function openModalConductor()  { document.getElementById("overlayConductor").classList.add("open"); }
+    function closeModalConductor() {
+      document.getElementById("overlayConductor").classList.remove("open");
+      ["conductorId","conductorNombre","conductorCedula","conductorTel","conductorPlaca","conductorNotas"].forEach(id=>document.getElementById(id).value="");
+      document.getElementById("conductorEstado").value = "activo";
+      document.getElementById("modalConductorTitle").textContent = "Nuevo conductor";
+    }
+
+    document.getElementById("btnNuevoConductor").addEventListener("click",    openModalConductor);
+    document.getElementById("closeModalConductor").addEventListener("click",  closeModalConductor);
+    document.getElementById("cancelModalConductor").addEventListener("click", closeModalConductor);
+    document.getElementById("overlayConductor").addEventListener("click", e => { if(e.target===e.currentTarget) closeModalConductor(); });
+    document.getElementById("conductorSearch").addEventListener("input", renderConductores);
+
+    window.editConductor = function(id) {
+      const c = conductores.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById("modalConductorTitle").textContent = "Editar conductor";
+      document.getElementById("conductorId").value      = id;
+      document.getElementById("conductorNombre").value  = c.nombre   || "";
+      document.getElementById("conductorCedula").value  = c.cedula   || "";
+      document.getElementById("conductorTel").value     = c.telefono || "";
+      document.getElementById("conductorPlaca").value   = c.placa    || "";
+      document.getElementById("conductorEstado").value  = c.estado   || "activo";
+      document.getElementById("conductorNotas").value   = c.notas    || "";
+      openModalConductor();
+    };
+
+    window.deleteConductor = async function(id, nombre) {
+      if (!confirm(`¿Eliminar al conductor "${nombre}"?`)) return;
+      try { await deleteDoc(doc(db, "conductores", id)); toast("Conductor eliminado."); }
+      catch(e) { toast("Error al eliminar.", "err"); }
+    };
+
+    document.getElementById("saveConductor").addEventListener("click", async () => {
+      const id      = document.getElementById("conductorId").value;
+      const nombre  = document.getElementById("conductorNombre").value.trim();
+      const cedula  = document.getElementById("conductorCedula").value.trim();
+      const tel     = document.getElementById("conductorTel").value.trim();
+      const placa   = document.getElementById("conductorPlaca").value.trim().toUpperCase();
+      const estado  = document.getElementById("conductorEstado").value;
+      const notas   = document.getElementById("conductorNotas").value.trim();
+      if (!nombre) { toast("El nombre es obligatorio.", "err"); return; }
+      const data = { nombre, cedula, telefono:tel, placa, estado, notas, updatedAt: serverTimestamp() };
+      try {
+        if (id) { await setDoc(doc(db, "conductores", id), data, { merge:true }); toast("Conductor actualizado ✓"); }
+        else    { data.createdAt = serverTimestamp(); await addDoc(collection(db, "conductores"), data); toast("Conductor agregado ✓"); }
+        closeModalConductor();
+      } catch(e) { toast("Error al guardar.", "err"); }
+    });
+
+    // ════════════════════════════════════
+    // ALERTAS DASHBOARD
+    // ════════════════════════════════════
+    function renderAlertas() {
+      const hoy      = new Date(); hoy.setHours(0,0,0,0);
+      const hace7    = new Date(hoy); hace7.setDate(hoy.getDate() - 7);
+
+      // Vencidas: activa + fecha retorno estimada < hoy
+      const vencidas = remisiones.filter(r => {
+        if (r.estado !== "activa" || !r.fecha_retorno_estimada) return false;
+        const fr = new Date(r.fecha_retorno_estimada + "T00:00:00");
+        return fr < hoy;
+      });
+
+      // Cartera antigua: retornada + saldo > 0 + fecha_retorno_real hace más de 7 días
+      const cartAntigua = remisiones.filter(r => {
+        if (r.estado !== "retornada") return false;
+        const saldo = Math.max(0,(r.valor_total||0)-(r.abono||0));
+        if (saldo <= 0) return false;
+        const ref = r.fecha_retorno_real || r.fecha_retorno_estimada;
+        if (!ref) return true; // sin fecha, siempre alerta
+        const fr = new Date(ref + "T00:00:00");
+        return fr <= hace7;
+      });
+
+      const panel = document.getElementById("alertasPanel");
+      const total = vencidas.length + cartAntigua.length;
+
+      if (!total) { panel.style.display = "none"; panel.innerHTML = ""; return; }
+
+      const soloWarn = vencidas.length === 0;
+      let html = `<div class="alertas-panel${soloWarn?" warn-only":""}">
+        <div class="alertas-header">
+          <div class="alertas-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Alertas
+          </div>
+          <span class="alertas-count${soloWarn?" warn":""}">${total} ${total===1?"alerta":"alertas"}</span>
+        </div>`;
+
+      // Vencidas
+      vencidas.forEach(r => {
+        const fr   = new Date(r.fecha_retorno_estimada + "T00:00:00");
+        const dias = Math.floor((hoy - fr) / 86400000);
+        html += `<div class="alerta-row">
+          <div class="alerta-dot red"></div>
+          <div class="alerta-info">
+            <div class="alerta-main">${r.numero||"—"} · ${r.cliente_nombre||"—"}</div>
+            <div class="alerta-meta">Retorno estimado: ${fmtDate(r.fecha_retorno_estimada)} — <strong style="color:var(--danger);">${dias} día${dias!==1?"s":""} de retraso</strong></div>
+          </div>
+          <div class="alerta-badge" style="color:var(--danger);">Vencida</div>
+        </div>`;
+      });
+
+      // Cartera antigua
+      cartAntigua.forEach(r => {
+        const saldo = Math.max(0,(r.valor_total||0)-(r.abono||0));
+        const ref   = r.fecha_retorno_real || r.fecha_retorno_estimada;
+        const fr    = ref ? new Date(ref + "T00:00:00") : null;
+        const dias  = fr ? Math.floor((hoy - fr) / 86400000) : null;
+        html += `<div class="alerta-row">
+          <div class="alerta-dot warn"></div>
+          <div class="alerta-info">
+            <div class="alerta-main">${r.numero||"—"} · ${r.cliente_nombre||"—"}</div>
+            <div class="alerta-meta">Retornada${dias!==null?" hace <strong>"+dias+" día"+(dias!==1?"s":"")+"</strong>":""} · Saldo pendiente sin cobrar</div>
+          </div>
+          <div class="alerta-badge" style="color:var(--warn);">${fmt(saldo)}</div>
+        </div>`;
+      });
+
+      html += `</div>`;
+      panel.innerHTML = html;
+      panel.style.display = "block";
+    }
 
     // ════════════════════════════════════
     // REPORTES
