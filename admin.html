@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central v4.4</title>
+  <title>Admin — El Progreso Central v4.5</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -1223,6 +1223,11 @@
         <div class="form-group">
           <label class="form-label">Nombre completo</label>
           <input class="form-input" type="text" id="conductorNombre" placeholder="Nombre del conductor" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email de acceso</label>
+          <input class="form-input" type="email" id="conductorEmail" placeholder="conductor@correo.com" />
+          <div style="font-size:11px;color:var(--muted);margin-top:5px;">Debe coincidir exactamente con el correo de su cuenta en Firebase Authentication. Se usa para vincular su inicio de sesión con sus remisiones asignadas.</div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -2554,7 +2559,7 @@
         const eb = c.estado==="activo"?"badge-green":"badge-red";
         const el = c.estado==="activo"?"Activo":"Inactivo";
         return `<tr>
-          <td><strong>${c.nombre||"—"}</strong>${c.notas?`<br><span class="td-muted">${c.notas}</span>`:""}</td>
+          <td><strong>${c.nombre||"—"}</strong>${c.email?`<br><span class="td-muted">${c.email}</span>`:""}</td>
           <td class="td-muted">${c.cedula||"—"}</td>
           <td class="td-muted">${c.telefono||"—"}</td>
           <td class="td-muted">${c.placa||"—"}</td>
@@ -2571,7 +2576,7 @@
     function openModalConductor()  { document.getElementById("overlayConductor").classList.add("open"); }
     function closeModalConductor() {
       document.getElementById("overlayConductor").classList.remove("open");
-      ["conductorId","conductorNombre","conductorCedula","conductorTel","conductorPlaca","conductorNotas"].forEach(id=>document.getElementById(id).value="");
+      ["conductorId","conductorNombre","conductorEmail","conductorCedula","conductorTel","conductorPlaca","conductorNotas"].forEach(id=>document.getElementById(id).value="");
       document.getElementById("conductorEstado").value = "activo";
       document.getElementById("modalConductorTitle").textContent = "Nuevo conductor";
     }
@@ -2588,6 +2593,7 @@
       document.getElementById("modalConductorTitle").textContent = "Editar conductor";
       document.getElementById("conductorId").value      = id;
       document.getElementById("conductorNombre").value  = c.nombre   || "";
+      document.getElementById("conductorEmail").value   = c.email    || "";
       document.getElementById("conductorCedula").value  = c.cedula   || "";
       document.getElementById("conductorTel").value     = c.telefono || "";
       document.getElementById("conductorPlaca").value   = c.placa    || "";
@@ -2605,13 +2611,15 @@
     document.getElementById("saveConductor").addEventListener("click", async () => {
       const id      = document.getElementById("conductorId").value;
       const nombre  = document.getElementById("conductorNombre").value.trim();
+      const email   = document.getElementById("conductorEmail").value.trim().toLowerCase();
       const cedula  = document.getElementById("conductorCedula").value.trim();
       const tel     = document.getElementById("conductorTel").value.trim();
       const placa   = document.getElementById("conductorPlaca").value.trim().toUpperCase();
       const estado  = document.getElementById("conductorEstado").value;
       const notas   = document.getElementById("conductorNotas").value.trim();
       if (!nombre) { toast("El nombre es obligatorio.", "err"); return; }
-      const data = { nombre, cedula, telefono:tel, placa, estado, notas, updatedAt: serverTimestamp() };
+      if (!email)  { toast("El email de acceso es obligatorio para vincular su inicio de sesión.", "err"); return; }
+      const data = { nombre, email, cedula, telefono:tel, placa, estado, notas, updatedAt: serverTimestamp() };
       try {
         if (id) { await setDoc(doc(db, "conductores", id), data, { merge:true }); toast("Conductor actualizado ✓"); }
         else    { data.createdAt = serverTimestamp(); await addDoc(collection(db, "conductores"), data); toast("Conductor agregado ✓"); }
