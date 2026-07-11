@@ -4,904 +4,448 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — El Progreso Central</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-
   <style>
-    /* ─── TOKENS ─────────────────────────────────────────── */
     :root {
-      --bg:        #111318;
-      --surf:      #1c1f27;
-      --surf-2:    #252931;
-      --surf-3:    #2e3340;
-      --brd:       #2e3340;
-      --gold:      #F5A623;
-      --gold-dim:  #c4841b;
-      --gold-bg:   rgba(245,166,35,0.10);
-      --gold-brd:  rgba(245,166,35,0.25);
-      --txt:       #F0EDE8;
-      --muted:     #8a8f9e;
-      --faint:     #3a3f4d;
-      --danger:    #e05555;
-      --danger-bg: rgba(224,85,85,0.10);
-      --success:   #4caf7d;
-      --success-bg:rgba(76,175,125,0.10);
-      --warn:      #f0a500;
-      --warn-bg:   rgba(240,165,0,0.10);
-      --radius:    10px;
-      --trans:     .18s ease;
-      --sidebar-w: 220px;
-      --sidebar-c: 60px;
-      --header-h:  58px;
+      --bg:#111318; --surf:#1c1f27; --surf-2:#252931; --surf-3:#2e3340;
+      --brd:#2e3340; --gold:#F5A623; --gold-dim:#c4841b;
+      --gold-bg:rgba(245,166,35,0.10); --gold-brd:rgba(245,166,35,0.25);
+      --txt:#F0EDE8; --muted:#8a8f9e; --faint:#3a3f4d;
+      --danger:#e05555; --danger-bg:rgba(224,85,85,0.10); --danger-brd:rgba(224,85,85,0.25);
+      --success:#4caf7d; --success-bg:rgba(76,175,125,0.10); --success-brd:rgba(76,175,125,0.25);
+      --warn:#f0a500; --warn-bg:rgba(240,165,0,0.10); --warn-brd:rgba(240,165,0,0.25);
+      --radius:10px; --trans:.18s ease;
+      --sidebar-w:220px; --sidebar-c:60px; --header-h:58px;
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--txt);
-      min-height: 100vh;
-      display: flex;
-    }
-
-    /* ─── SIDEBAR ────────────────────────────────────────── */
-    .sidebar {
-      position: fixed;
-      top: 0; left: 0; bottom: 0;
-      width: var(--sidebar-w);
-      background: var(--surf);
-      border-right: 1px solid var(--brd);
-      display: flex;
-      flex-direction: column;
-      transition: width var(--trans);
-      z-index: 100;
-      overflow: hidden;
-    }
-
-    .sidebar.collapsed { width: var(--sidebar-c); }
-
-    /* Brand */
-    .sb-brand {
-      padding: 0 16px;
-      height: var(--header-h);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid var(--brd);
-      flex-shrink: 0;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .sb-brand-icon {
-      width: 28px;
-      height: 28px;
-      background: var(--gold);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .sb-brand-icon svg { color: #111318; }
-
-    .sb-brand-name {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      line-height: 1.1;
-      color: var(--txt);
-      opacity: 1;
-      transition: opacity var(--trans);
-    }
-
-    .sidebar.collapsed .sb-brand-name { opacity: 0; }
-
-    /* Nav items */
-    .sb-nav {
-      flex: 1;
-      padding: 12px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    .sb-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background var(--trans), color var(--trans);
-      color: var(--muted);
-      user-select: none;
-    }
-
-    .sb-item:hover { background: var(--surf-2); color: var(--txt); }
-
-    .sb-item.active {
-      background: var(--gold-bg);
-      color: var(--gold);
-      border: 1px solid var(--gold-brd);
-    }
-
-    .sb-item svg { flex-shrink: 0; }
-
-    .sb-label {
-      font-size: 13px;
-      font-weight: 500;
-      opacity: 1;
-      transition: opacity var(--trans);
-    }
-
-    .sidebar.collapsed .sb-label { opacity: 0; pointer-events: none; }
-
-    /* Toggle btn */
-    .sb-toggle {
-      padding: 12px 8px;
-      border-top: 1px solid var(--brd);
-      flex-shrink: 0;
-    }
-
-    .sb-toggle-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--muted);
-      transition: background var(--trans), color var(--trans);
-      white-space: nowrap;
-    }
-
-    .sb-toggle-btn:hover { background: var(--surf-2); color: var(--txt); }
-
-    .sb-toggle-icon { transition: transform .3s ease; flex-shrink: 0; }
-    .sidebar.collapsed .sb-toggle-icon { transform: rotate(180deg); }
-
-    /* ─── MAIN LAYOUT ────────────────────────────────────── */
-    .main {
-      margin-left: var(--sidebar-w);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      transition: margin-left var(--trans);
-    }
-
-    .main.expanded { margin-left: var(--sidebar-c); }
-
-    /* ─── HEADER ─────────────────────────────────────────── */
-    .header {
-      height: var(--header-h);
-      background: var(--surf);
-      border-bottom: 1px solid var(--brd);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-
-    .header-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--txt);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .user-chip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--surf-2);
-      border: 1px solid var(--brd);
-      border-radius: 20px;
-      padding: 5px 12px 5px 6px;
-    }
-
-    .user-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: var(--gold-bg);
-      border: 1px solid var(--gold-brd);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--gold);
-    }
-
-    .user-info { line-height: 1.2; }
-
-    .user-email {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--txt);
-      max-width: 160px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .user-role {
-      font-size: 10px;
-      color: var(--gold);
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .btn-logout {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      background: transparent;
-      border: 1px solid var(--brd);
-      border-radius: 7px;
-      color: var(--muted);
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all var(--trans);
-    }
-
-    .btn-logout:hover {
-      border-color: var(--danger);
-      color: var(--danger);
-      background: var(--danger-bg);
-    }
-
-    /* ─── CONTENT ────────────────────────────────────────── */
-    .content {
-      flex: 1;
-      padding: 28px 28px;
-      max-width: 1200px;
-      width: 100%;
-    }
-
-    /* Secciones */
-    .section { display: none; }
-    .section.active { display: block; }
-
-    .section-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--txt);
-      margin-bottom: 6px;
-    }
-
-    .section-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    /* ─── DASHBOARD ──────────────────────────────────────── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-
-    .kpi-card {
-      background: var(--surf);
-      border: 1px solid var(--brd);
-      border-radius: var(--radius);
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color var(--trans);
-    }
-
-    .kpi-card:hover { border-color: var(--faint); }
-
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-    }
-
-    .kpi-card.gold::before  { background: var(--gold); }
-    .kpi-card.green::before { background: var(--success); }
-    .kpi-card.warn::before  { background: var(--warn); }
-    .kpi-card.red::before   { background: var(--danger); }
-
-    .kpi-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .kpi-value {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 42px;
-      font-weight: 800;
-      line-height: 1;
-      color: var(--txt);
-    }
-
-    .kpi-value.gold  { color: var(--gold); }
-    .kpi-value.green { color: var(--success); }
-    .kpi-value.warn  { color: var(--warn); }
-    .kpi-value.red   { color: var(--danger); }
-
-    .kpi-hint {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* Tabla reciente */
-    .panel {
-      background: var(--surf);
-      border: 1px solid var(--brd);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    .panel-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--brd);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .panel-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--txt);
-    }
-
-    .badge {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .badge-gold    { background: var(--gold-bg);    color: var(--gold);    border: 1px solid var(--gold-brd); }
-    .badge-green   { background: var(--success-bg); color: var(--success); border: 1px solid rgba(76,175,125,0.25); }
-    .badge-warn    { background: var(--warn-bg);    color: var(--warn);    border: 1px solid rgba(240,165,0,0.25); }
-    .badge-red     { background: var(--danger-bg);  color: var(--danger);  border: 1px solid rgba(224,85,85,0.25); }
-    .badge-muted   { background: var(--surf-2);     color: var(--muted);   border: 1px solid var(--brd); }
-
-    /* ─── TABLA ──────────────────────────────────────────── */
-    .tbl-wrap { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    thead th {
-      text-align: left;
-      padding: 11px 20px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid var(--brd);
-      white-space: nowrap;
-    }
-
-    tbody tr {
-      border-bottom: 1px solid var(--brd);
-      transition: background var(--trans);
-    }
-
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: var(--surf-2); }
-
-    tbody td {
-      padding: 12px 20px;
-      color: var(--txt);
-      vertical-align: middle;
-    }
-
-    .td-muted { color: var(--muted); }
-    .td-mono  { font-family: monospace; font-size: 12px; color: var(--muted); }
-
-    /* ─── TOOLBAR ────────────────────────────────────────── */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .search-box {
-      position: relative;
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .search-box svg {
-      position: absolute;
-      left: 11px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      pointer-events: none;
-    }
-
-    .search-box input {
-      width: 100%;
-      background: var(--surf);
-      border: 1px solid var(--brd);
-      border-radius: 7px;
-      color: var(--txt);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      padding: 9px 12px 9px 36px;
-      outline: none;
-      transition: border-color var(--trans), box-shadow var(--trans);
-    }
-
-    .search-box input:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(245,166,35,0.12);
-    }
-
-    .search-box input::placeholder { color: var(--muted); opacity: 0.6; }
-
-    .btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 9px 16px;
-      border-radius: 7px;
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      transition: all var(--trans);
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--gold);
-      color: #111318;
-      font-weight: 600;
-    }
-
-    .btn-primary:hover {
-      background: #f0b040;
-      box-shadow: 0 4px 14px rgba(245,166,35,0.25);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--brd);
-      color: var(--muted);
-    }
-
-    .btn-ghost:hover { background: var(--surf-2); color: var(--txt); }
-
-    /* ─── EMPTY STATE ────────────────────────────────────── */
-    .empty-state {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--muted);
-    }
-
-    .empty-state svg { opacity: 0.3; margin-bottom: 12px; }
-
-    .empty-state p {
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    /* ─── REPORTES PLACEHOLDER ───────────────────────────── */
-    .coming-soon {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 300px;
-      color: var(--muted);
-      text-align: center;
-      gap: 12px;
-    }
-
-    .coming-soon svg { opacity: 0.2; }
-
-    .coming-soon h3 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--faint);
-    }
-
-    .coming-soon p { font-size: 13px; max-width: 300px; }
-
-    /* ─── RESPONSIVE ─────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .sidebar {
-        width: var(--sidebar-c);
-      }
-      .sidebar .sb-brand-name,
-      .sidebar .sb-label { opacity: 0; pointer-events: none; }
-      .sidebar .sb-toggle-icon { transform: rotate(180deg); }
-      .main { margin-left: var(--sidebar-c); }
-      .content { padding: 20px 16px; }
-      .user-email { max-width: 100px; }
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 480px) {
-      .kpi-grid { grid-template-columns: 1fr 1fr; }
-      .header { padding: 0 14px; }
-      .user-info { display: none; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;}
+
+    /* SIDEBAR */
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--surf);border-right:1px solid var(--brd);display:flex;flex-direction:column;transition:width var(--trans);z-index:100;overflow:hidden;}
+    .sidebar.collapsed{width:var(--sidebar-c);}
+    .sb-brand{padding:0 16px;height:var(--header-h);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--brd);flex-shrink:0;overflow:hidden;white-space:nowrap;}
+    .sb-brand-icon{width:28px;height:28px;background:var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .sb-brand-icon svg{color:#111318;}
+    .sb-brand-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;transition:opacity var(--trans);}
+    .sidebar.collapsed .sb-brand-name{opacity:0;}
+    .sb-nav{flex:1;padding:12px 8px;display:flex;flex-direction:column;gap:2px;overflow-y:auto;overflow-x:hidden;}
+    .sb-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:background var(--trans),color var(--trans);color:var(--muted);user-select:none;border:1px solid transparent;}
+    .sb-item:hover{background:var(--surf-2);color:var(--txt);}
+    .sb-item.active{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-brd);}
+    .sb-item svg{flex-shrink:0;}
+    .sb-label{font-size:13px;font-weight:500;transition:opacity var(--trans);}
+    .sidebar.collapsed .sb-label{opacity:0;pointer-events:none;}
+    .sb-toggle{padding:12px 8px;border-top:1px solid var(--brd);flex-shrink:0;}
+    .sb-toggle-btn{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;cursor:pointer;color:var(--muted);transition:background var(--trans),color var(--trans);white-space:nowrap;}
+    .sb-toggle-btn:hover{background:var(--surf-2);color:var(--txt);}
+    .sb-toggle-icon{transition:transform .3s ease;flex-shrink:0;}
+    .sidebar.collapsed .sb-toggle-icon{transform:rotate(180deg);}
+
+    /* MAIN */
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--trans);}
+    .main.expanded{margin-left:var(--sidebar-c);}
+
+    /* HEADER */
+    .header{height:var(--header-h);background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:50;}
+    .header-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+    .header-right{display:flex;align-items:center;gap:12px;}
+    .user-chip{display:flex;align-items:center;gap:8px;background:var(--surf-2);border:1px solid var(--brd);border-radius:20px;padding:5px 12px 5px 6px;}
+    .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--gold-bg);border:1px solid var(--gold-brd);display:flex;align-items:center;justify-content:center;color:var(--gold);}
+    .user-email{font-size:12px;font-weight:500;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .user-role{font-size:10px;color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+    .btn-logout{display:flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;border:1px solid var(--brd);border-radius:7px;color:var(--muted);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all var(--trans);}
+    .btn-logout:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-bg);}
+
+    /* CONTENT */
+    .content{flex:1;padding:28px;}
+    .section{display:none;}
+    .section.active{display:block;}
+    .section-title{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+    .section-sub{font-size:13px;color:var(--muted);margin-bottom:22px;}
+
+    /* KPI */
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px;}
+    .kpi-card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
+    .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+    .kpi-card.gold::before{background:var(--gold);}
+    .kpi-card.green::before{background:var(--success);}
+    .kpi-card.warn::before{background:var(--warn);}
+    .kpi-card.red::before{background:var(--danger);}
+    .kpi-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+    .kpi-value{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:800;line-height:1;}
+    .kpi-value.gold{color:var(--gold);} .kpi-value.green{color:var(--success);} .kpi-value.warn{color:var(--warn);} .kpi-value.red{color:var(--danger);}
+    .kpi-hint{font-size:12px;color:var(--muted);margin-top:6px;}
+
+    /* PANEL */
+    .panel{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+    .panel-header{padding:14px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+    .panel-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+
+    /* BADGES */
+    .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+    .badge-gold{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-brd);}
+    .badge-green{background:var(--success-bg);color:var(--success);border:1px solid var(--success-brd);}
+    .badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-brd);}
+    .badge-red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-brd);}
+    .badge-muted{background:var(--surf-2);color:var(--muted);border:1px solid var(--brd);}
+
+    /* TOOLBAR */
+    .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+    .search-box{position:relative;flex:1;min-width:180px;}
+    .search-box svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+    .search-box input{width:100%;background:var(--surf);border:1px solid var(--brd);border-radius:7px;color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px 9px 36px;outline:none;transition:border-color var(--trans),box-shadow var(--trans);}
+    .search-box input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.12);}
+    .search-box input::placeholder{color:var(--muted);opacity:.6;}
+    select.filter-sel{background:var(--surf);border:1px solid var(--brd);border-radius:7px;color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;cursor:pointer;transition:border-color var(--trans);}
+    select.filter-sel:focus{border-color:var(--gold);}
+
+    /* BUTTONS */
+    .btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all var(--trans);white-space:nowrap;}
+    .btn-primary{background:var(--gold);color:#111318;font-weight:600;}
+    .btn-primary:hover{background:#f0b040;box-shadow:0 4px 14px rgba(245,166,35,.25);}
+    .btn-ghost{background:transparent;border:1px solid var(--brd);color:var(--muted);}
+    .btn-ghost:hover{background:var(--surf-2);color:var(--txt);}
+    .btn-danger{background:var(--danger-bg);border:1px solid var(--danger-brd);color:var(--danger);}
+    .btn-danger:hover{background:var(--danger);color:#fff;}
+    .btn-sm{padding:5px 10px;font-size:12px;}
+
+    /* TABLE */
+    .tbl-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    thead th{text-align:left;padding:11px 16px;font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--brd);white-space:nowrap;}
+    tbody tr{border-bottom:1px solid var(--brd);transition:background var(--trans);}
+    tbody tr:last-child{border-bottom:none;}
+    tbody tr:hover{background:var(--surf-2);}
+    tbody td{padding:11px 16px;color:var(--txt);vertical-align:middle;}
+    .td-muted{color:var(--muted);font-size:12px;}
+    .td-mono{font-family:monospace;font-size:12px;color:var(--gold);}
+    .td-num{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
+    .td-actions{display:flex;gap:6px;}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:44px 20px;color:var(--muted);}
+    .empty-state svg{opacity:.25;margin-bottom:12px;}
+    .empty-state p{font-size:14px;margin-bottom:16px;}
+
+    /* MODAL */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center;padding:20px;}
+    .overlay.open{display:flex;}
+    .modal{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.7);animation:modalIn .18s ease;}
+    @keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;}
+    .modal-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+    .modal-close{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;border-radius:6px;transition:color var(--trans);}
+    .modal-close:hover{color:var(--txt);}
+    .modal-body{padding:20px 22px;}
+    .modal-footer{padding:14px 22px;border-top:1px solid var(--brd);display:flex;justify-content:flex-end;gap:10px;}
+
+    /* FORM */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-group{margin-bottom:14px;}
+    .form-label{display:block;font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+    .form-input,.form-select,.form-textarea{width:100%;background:var(--surf-2);border:1px solid var(--brd);border-radius:7px;color:var(--txt);font-family:'Inter',sans-serif;font-size:13px;padding:10px 12px;outline:none;transition:border-color var(--trans),box-shadow var(--trans);}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.12);}
+    .form-input::placeholder,.form-textarea::placeholder{color:var(--muted);opacity:.5;}
+    .form-textarea{resize:vertical;min-height:70px;}
+    .form-select{cursor:pointer;}
+
+    /* CAT LIST */
+    .cat-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+    .cat-row{display:flex;align-items:center;gap:10px;background:var(--surf-2);border:1px solid var(--brd);border-radius:8px;padding:10px 14px;}
+    .cat-row span{flex:1;font-size:14px;}
+    .cat-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+
+    /* COMING SOON */
+    .coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;color:var(--muted);text-align:center;gap:12px;}
+    .coming-soon svg{opacity:.2;}
+    .coming-soon h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);}
+    .coming-soon p{font-size:13px;max-width:300px;}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--surf-3);border:1px solid var(--brd);border-radius:8px;padding:12px 18px;font-size:13px;color:var(--txt);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:999;transform:translateY(80px);opacity:0;transition:all .25s ease;display:flex;align-items:center;gap:10px;}
+    .toast.show{transform:translateY(0);opacity:1;}
+    .toast.ok{border-color:var(--success-brd);}
+    .toast.err{border-color:var(--danger-brd);}
+
+    @media(max-width:768px){
+      .sidebar{width:var(--sidebar-c);}
+      .sidebar .sb-brand-name,.sidebar .sb-label{opacity:0;pointer-events:none;}
+      .sidebar .sb-toggle-icon{transform:rotate(180deg);}
+      .main{margin-left:var(--sidebar-c);}
+      .content{padding:18px 14px;}
+      .kpi-grid{grid-template-columns:1fr 1fr;}
+      .form-row{grid-template-columns:1fr;}
+      .user-email{max-width:90px;}
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── SIDEBAR ──────────────────────────────────────────── -->
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-
     <div class="sb-brand">
       <div class="sb-brand-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-        </svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
       </div>
       <div class="sb-brand-name">El Progreso</div>
     </div>
-
     <nav class="sb-nav">
       <div class="sb-item active" data-section="dashboard">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         <span class="sb-label">Dashboard</span>
       </div>
-
       <div class="sb-item" data-section="remisiones">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         <span class="sb-label">Remisiones</span>
       </div>
-
       <div class="sb-item" data-section="inventario">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         <span class="sb-label">Inventario</span>
       </div>
-
       <div class="sb-item" data-section="pagos">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         <span class="sb-label">Pagos</span>
       </div>
-
       <div class="sb-item" data-section="reportes">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span class="sb-label">Reportes</span>
       </div>
     </nav>
-
     <div class="sb-toggle">
       <div class="sb-toggle-btn" id="sidebarToggle">
-        <svg class="sb-toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+        <svg class="sb-toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         <span class="sb-label">Colapsar</span>
       </div>
     </div>
-
   </aside>
 
-  <!-- ─── MAIN ─────────────────────────────────────────────── -->
+  <!-- MAIN -->
   <div class="main" id="main">
-
-    <!-- HEADER -->
     <header class="header">
       <div class="header-title" id="headerTitle">Dashboard</div>
       <div class="header-right">
         <div class="user-chip">
           <div class="user-avatar">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <div class="user-info">
+          <div>
             <div class="user-email" id="userEmail">—</div>
             <div class="user-role">Administrador</div>
           </div>
         </div>
         <button class="btn-logout" id="btnLogout">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Salir
         </button>
       </div>
     </header>
 
-    <!-- CONTENT -->
     <div class="content">
 
-      <!-- ── DASHBOARD ─────────────────────────────────────── -->
+      <!-- DASHBOARD -->
       <div class="section active" id="sec-dashboard">
         <div class="section-title">Dashboard</div>
         <div class="section-sub">Resumen general del negocio</div>
-
         <div class="kpi-grid">
-          <div class="kpi-card gold">
-            <div class="kpi-label">Remisiones activas</div>
-            <div class="kpi-value gold">—</div>
-            <div class="kpi-hint">Equipos fuera en este momento</div>
-          </div>
-          <div class="kpi-card green">
-            <div class="kpi-label">Equipos disponibles</div>
-            <div class="kpi-value green">—</div>
-            <div class="kpi-hint">Listos para despachar</div>
-          </div>
-          <div class="kpi-card warn">
-            <div class="kpi-label">Pagos pendientes</div>
-            <div class="kpi-value warn">—</div>
-            <div class="kpi-hint">Clientes con saldo por cobrar</div>
-          </div>
-          <div class="kpi-card red">
-            <div class="kpi-label">Equipos sin retornar</div>
-            <div class="kpi-value red">—</div>
-            <div class="kpi-hint">Más de 30 días fuera</div>
-          </div>
+          <div class="kpi-card gold"><div class="kpi-label">Remisiones activas</div><div class="kpi-value gold">—</div><div class="kpi-hint">Equipos fuera en este momento</div></div>
+          <div class="kpi-card green"><div class="kpi-label">Unidades en bodega</div><div class="kpi-value green" id="kpi-bodega">—</div><div class="kpi-hint">Disponibles para despachar</div></div>
+          <div class="kpi-card warn"><div class="kpi-label">Pagos pendientes</div><div class="kpi-value warn">—</div><div class="kpi-hint">Clientes con saldo por cobrar</div></div>
+          <div class="kpi-card red"><div class="kpi-label">En mantenimiento</div><div class="kpi-value red" id="kpi-mant">—</div><div class="kpi-hint">Elementos fuera de servicio</div></div>
         </div>
-
         <div class="panel">
-          <div class="panel-header">
-            <div class="panel-title">Remisiones recientes</div>
-            <span class="badge badge-muted">Próximamente con datos reales</span>
-          </div>
-          <div class="empty-state">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-            </svg>
-            <p>Las remisiones aparecerán aquí cuando estén conectadas a Firestore.</p>
+          <div class="panel-header"><div class="panel-title">Inventario — resumen</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Código</th><th>Elemento</th><th>Categoría</th><th>Bodega</th><th>Campo</th><th>Estado</th></tr></thead>
+              <tbody id="dash-inv-tbody"><tr><td colspan="6"><div class="empty-state"><p>Cargando...</p></div></td></tr></tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      <!-- ── REMISIONES ─────────────────────────────────────── -->
+      <!-- REMISIONES -->
       <div class="section" id="sec-remisiones">
         <div class="section-title">Remisiones</div>
         <div class="section-sub">Control de salida y retorno de equipos</div>
-
-        <div class="toolbar">
-          <div class="search-box">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Buscar por cliente o número..." />
-          </div>
-          <button class="btn btn-ghost">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-            Filtrar
-          </button>
-          <button class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Nueva remisión
-          </button>
-        </div>
-
-        <div class="panel">
-          <div class="tbl-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th># Remisión</th>
-                  <th>Cliente</th>
-                  <th>Fecha salida</th>
-                  <th>Fecha retorno</th>
-                  <th>Estado</th>
-                  <th>Conductor</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="7">
-                    <div class="empty-state">
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      </svg>
-                      <p>No hay remisiones registradas aún.</p>
-                      <button class="btn btn-primary">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Crear primera remisión
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <div class="panel"><div class="coming-soon">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <h3>Próximamente</h3><p>Se construye después del inventario.</p>
+        </div></div>
       </div>
 
-      <!-- ── INVENTARIO ──────────────────────────────────────── -->
+      <!-- INVENTARIO -->
       <div class="section" id="sec-inventario">
         <div class="section-title">Inventario</div>
-        <div class="section-sub">Stock de andamios y formaletas</div>
-
+        <div class="section-sub">Stock de equipos y elementos</div>
         <div class="toolbar">
           <div class="search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Buscar elemento..." />
+            <input type="text" id="invSearch" placeholder="Buscar por nombre o código..." />
           </div>
-          <button class="btn btn-ghost">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-            Filtrar
+          <select class="filter-sel" id="invCatFilter"><option value="">Todas las categorías</option></select>
+          <button class="btn btn-ghost" id="btnGestionarCats">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+            Categorías
           </button>
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" id="btnNuevoItem">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Agregar elemento
+            Nuevo elemento
           </button>
         </div>
-
         <div class="panel">
           <div class="tbl-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Elemento</th>
-                  <th>Categoría</th>
-                  <th>Stock total</th>
-                  <th>En bodega</th>
-                  <th>En campo</th>
-                  <th>Estado</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="7">
-                    <div class="empty-state">
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                      </svg>
-                      <p>No hay elementos en inventario aún.</p>
-                      <button class="btn btn-primary">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Agregar primer elemento
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+              <thead><tr><th>Código</th><th>Elemento</th><th>Categoría</th><th>Unidad</th><th>Total</th><th>Bodega</th><th>Campo</th><th>Estado</th><th></th></tr></thead>
+              <tbody id="invTbody">
+                <tr><td colspan="9"><div class="empty-state">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  <p>No hay elementos aún.</p>
+                </div></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- ── PAGOS ───────────────────────────────────────────── -->
+      <!-- PAGOS -->
       <div class="section" id="sec-pagos">
         <div class="section-title">Pagos</div>
-        <div class="section-sub">Registro de cobros y estado de cartera</div>
-
-        <div class="toolbar">
-          <div class="search-box">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" placeholder="Buscar cliente..." />
-          </div>
-          <button class="btn btn-ghost">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-            Filtrar
-          </button>
-          <button class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Registrar pago
-          </button>
-        </div>
-
-        <div class="panel">
-          <div class="tbl-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Remisión</th>
-                  <th>Valor total</th>
-                  <th>Abonado</th>
-                  <th>Saldo</th>
-                  <th>Estado</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="7">
-                    <div class="empty-state">
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>
-                      </svg>
-                      <p>No hay pagos registrados aún.</p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <div class="section-sub">Registro de cobros y cartera</div>
+        <div class="panel"><div class="coming-soon">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <h3>Próximamente</h3><p>Se activa cuando las remisiones estén en marcha.</p>
+        </div></div>
       </div>
 
-      <!-- ── REPORTES ────────────────────────────────────────── -->
+      <!-- REPORTES -->
       <div class="section" id="sec-reportes">
         <div class="section-title">Reportes</div>
         <div class="section-sub">Análisis y exportación de datos</div>
+        <div class="panel"><div class="coming-soon">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <h3>Próximamente</h3><p>Disponible cuando haya datos en el sistema.</p>
+        </div></div>
+      </div>
 
-        <div class="panel">
-          <div class="coming-soon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-            </svg>
-            <h3>Próximamente</h3>
-            <p>Los reportes estarán disponibles cuando haya datos en remisiones, inventario y pagos.</p>
+    </div>
+  </div>
+
+  <!-- MODAL: ITEM -->
+  <div class="overlay" id="overlayItem">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalItemTitle">Nuevo elemento</div>
+        <button class="modal-close" id="closeModalItem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="itemId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Código</label>
+            <input class="form-input" type="text" id="itemCodigo" placeholder="AND-001" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Categoría</label>
+            <select class="form-select" id="itemCategoria"><option value="">Seleccionar...</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre del elemento</label>
+          <input class="form-input" type="text" id="itemNombre" placeholder="Ej: Marco andamio certificado" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Unidad</label>
+            <select class="form-select" id="itemUnidad">
+              <option value="pieza">Pieza</option>
+              <option value="unidad">Unidad</option>
+              <option value="metro">Metro</option>
+              <option value="juego">Juego</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-select" id="itemEstado">
+              <option value="activo">Activo</option>
+              <option value="mantenimiento">Mantenimiento</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Stock total</label>
+            <input class="form-input" type="number" id="itemTotal" min="0" placeholder="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">En bodega</label>
+            <input class="form-input" type="number" id="itemBodega" min="0" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notas (opcional)</label>
+          <textarea class="form-textarea" id="itemNotas" placeholder="Observaciones o características especiales..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelModalItem">Cancelar</button>
+        <button class="btn btn-primary" id="saveItem">Guardar elemento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CATEGORÍAS -->
+  <div class="overlay" id="overlayCats">
+    <div class="modal" style="max-width:400px;">
+      <div class="modal-header">
+        <div class="modal-title">Categorías</div>
+        <button class="modal-close" id="closeModalCats"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="cat-list" id="catList"><div class="cat-empty">Cargando...</div></div>
+        <div class="form-row" style="margin-bottom:0;">
+          <div class="form-group" style="margin-bottom:0;">
+            <input class="form-input" type="text" id="newCatNombre" placeholder="Nueva categoría..." />
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="btn btn-primary" id="btnAddCat" style="width:100%;">Agregar</button>
           </div>
         </div>
       </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="closeCatsBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
+  <!-- MODAL: CONFIRMAR ELIMINAR -->
+  <div class="overlay" id="overlayDel">
+    <div class="modal" style="max-width:380px;">
+      <div class="modal-header">
+        <div class="modal-title">Eliminar elemento</div>
+        <button class="modal-close" id="closeModalDel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--muted);font-size:14px;line-height:1.6;">¿Seguro que deseas eliminar <strong id="delNombre" style="color:var(--txt);"></strong>? Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelDel">Cancelar</button>
+        <button class="btn btn-danger" id="confirmDel">Eliminar</button>
+      </div>
+    </div>
+  </div>
 
-  <!-- ─── FIREBASE ──────────────────────────────────────────── -->
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- FIREBASE -->
   <script type="module">
-    import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut }
-                                 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc }
-                                 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, doc, onSnapshot, addDoc, setDoc, deleteDoc, getDoc, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey:            "AIzaSyBVu4D7EHOLWsCbOe1o8Z7GrKe9cvHulmk",
@@ -916,62 +460,280 @@
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
-    // ── GUARD: solo admin puede estar aquí ───────────────────
+    let items      = [];
+    let categorias = [];
+    let deleteId   = null;
+
+    // GUARD
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = "index.html"; return; }
-
       const snap = await getDoc(doc(db, "usuarios", user.uid));
       if (!snap.exists() || snap.data().rol !== "admin") {
-        await signOut(auth);
-        window.location.href = "index.html";
-        return;
+        await signOut(auth); window.location.href = "index.html"; return;
       }
-
-      // Mostrar email del usuario
       document.getElementById("userEmail").textContent = user.email;
+      initListeners();
     });
 
-    // ── LOGOUT ───────────────────────────────────────────────
+    // LOGOUT
     document.getElementById("btnLogout").addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "index.html";
+      await signOut(auth); window.location.href = "index.html";
     });
 
-    // ── NAVEGACIÓN SIDEBAR ───────────────────────────────────
-    const sectionTitles = {
-      dashboard:  "Dashboard",
-      remisiones: "Remisiones",
-      inventario: "Inventario",
-      pagos:      "Pagos",
-      reportes:   "Reportes"
-    };
-
+    // NAVEGACIÓN
+    const titles = { dashboard:"Dashboard", remisiones:"Remisiones", inventario:"Inventario", pagos:"Pagos", reportes:"Reportes" };
     document.querySelectorAll(".sb-item[data-section]").forEach(item => {
       item.addEventListener("click", () => {
         const sec = item.dataset.section;
-
-        // Activo en nav
         document.querySelectorAll(".sb-item").forEach(i => i.classList.remove("active"));
         item.classList.add("active");
-
-        // Mostrar sección
         document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
         document.getElementById("sec-" + sec).classList.add("active");
-
-        // Título header
-        document.getElementById("headerTitle").textContent = sectionTitles[sec];
+        document.getElementById("headerTitle").textContent = titles[sec];
       });
     });
 
-    // ── TOGGLE SIDEBAR ───────────────────────────────────────
-    const sidebar = document.getElementById("sidebar");
-    const mainEl  = document.getElementById("main");
-
+    // SIDEBAR TOGGLE
     document.getElementById("sidebarToggle").addEventListener("click", () => {
-      sidebar.classList.toggle("collapsed");
-      mainEl.classList.toggle("expanded");
+      document.getElementById("sidebar").classList.toggle("collapsed");
+      document.getElementById("main").classList.toggle("expanded");
     });
 
+    // TOAST
+    function toast(msg, tipo = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = "toast " + tipo + " show";
+      setTimeout(() => el.classList.remove("show"), 3000);
+    }
+
+    // LISTENERS
+    function initListeners() {
+      onSnapshot(collection(db, "categorias"), snap => {
+        categorias = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => a.nombre.localeCompare(b.nombre));
+        renderCatSelects();
+        renderCatList();
+      });
+
+      onSnapshot(collection(db, "inventario"), snap => {
+        items = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a,b) => (a.codigo||"").localeCompare(b.codigo||""));
+        renderInventario();
+        renderDashboard();
+      });
+    }
+
+    // RENDER INVENTARIO
+    function renderInventario() {
+      const search = document.getElementById("invSearch").value.toLowerCase();
+      const catF   = document.getElementById("invCatFilter").value;
+      const filtered = items.filter(it => {
+        const ms = (it.nombre||"").toLowerCase().includes(search) || (it.codigo||"").toLowerCase().includes(search);
+        const mc = !catF || it.categoria === catF;
+        return ms && mc;
+      });
+
+      const tbody = document.getElementById("invTbody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <p>No hay elementos que coincidan.</p>
+          <button class="btn btn-primary" onclick="document.getElementById('btnNuevoItem').click()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Agregar elemento
+          </button>
+        </div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(it => {
+        const campo = Math.max(0, (it.stock_total||0) - (it.en_bodega||0));
+        const eb = it.estado === "activo" ? "badge-green" : it.estado === "mantenimiento" ? "badge-warn" : "badge-red";
+        const el = it.estado === "activo" ? "Activo" : it.estado === "mantenimiento" ? "Mantenim." : "Baja";
+        return `<tr>
+          <td class="td-mono">${it.codigo||"—"}</td>
+          <td><strong>${it.nombre||"—"}</strong>${it.notas?`<br><span class="td-muted">${it.notas}</span>`:""}</td>
+          <td class="td-muted">${it.categoria||"—"}</td>
+          <td class="td-muted">${it.unidad||"—"}</td>
+          <td class="td-num">${it.stock_total||0}</td>
+          <td class="td-num" style="color:var(--success)">${it.en_bodega||0}</td>
+          <td class="td-num" style="color:var(--warn)">${campo}</td>
+          <td><span class="badge ${eb}">${el}</span></td>
+          <td><div class="td-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editItem('${it.id}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="askDelete('${it.id}','${(it.nombre||"").replace(/'/g,"\\'")}')">Eliminar</button>
+          </div></td>
+        </tr>`;
+      }).join("");
+    }
+
+    // RENDER DASHBOARD
+    function renderDashboard() {
+      document.getElementById("kpi-bodega").textContent = items.reduce((s,it) => s+(it.en_bodega||0), 0);
+      document.getElementById("kpi-mant").textContent   = items.filter(it => it.estado === "mantenimiento").length;
+
+      const tbody  = document.getElementById("dash-inv-tbody");
+      const recent = items.slice(0, 5);
+      if (!recent.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>Sin elementos en inventario aún.</p></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = recent.map(it => {
+        const campo = Math.max(0, (it.stock_total||0) - (it.en_bodega||0));
+        const eb = it.estado === "activo" ? "badge-green" : it.estado === "mantenimiento" ? "badge-warn" : "badge-red";
+        const el = it.estado === "activo" ? "Activo" : it.estado === "mantenimiento" ? "Mantenim." : "Baja";
+        return `<tr>
+          <td class="td-mono">${it.codigo||"—"}</td>
+          <td>${it.nombre||"—"}</td>
+          <td class="td-muted">${it.categoria||"—"}</td>
+          <td class="td-num" style="color:var(--success)">${it.en_bodega||0}</td>
+          <td class="td-num" style="color:var(--warn)">${campo}</td>
+          <td><span class="badge ${eb}">${el}</span></td>
+        </tr>`;
+      }).join("");
+    }
+
+    // CAT SELECTS
+    function renderCatSelects() {
+      const opts = categorias.map(c => `<option value="${c.nombre}">${c.nombre}</option>`).join("");
+      const sel  = document.getElementById("itemCategoria");
+      const cur  = sel.value;
+      sel.innerHTML = `<option value="">Seleccionar...</option>${opts}`;
+      if (cur) sel.value = cur;
+      const flt  = document.getElementById("invCatFilter");
+      const curF = flt.value;
+      flt.innerHTML = `<option value="">Todas las categorías</option>${opts}`;
+      if (curF) flt.value = curF;
+    }
+
+    // CAT LIST
+    function renderCatList() {
+      const list = document.getElementById("catList");
+      if (!categorias.length) { list.innerHTML = `<div class="cat-empty">No hay categorías aún.</div>`; return; }
+      list.innerHTML = categorias.map(c => `
+        <div class="cat-row">
+          <span>${c.nombre}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteCat('${c.id}','${c.nombre.replace(/'/g,"\\'")}')">Eliminar</button>
+        </div>`).join("");
+    }
+
+    // MODAL ITEM
+    function openModalItem()  { document.getElementById("overlayItem").classList.add("open"); }
+    function closeModalItem() {
+      document.getElementById("overlayItem").classList.remove("open");
+      ["itemId","itemCodigo","itemNombre","itemNotas","itemTotal","itemBodega"].forEach(id => document.getElementById(id).value = "");
+      document.getElementById("itemCategoria").value = "";
+      document.getElementById("itemUnidad").value    = "pieza";
+      document.getElementById("itemEstado").value    = "activo";
+      document.getElementById("modalItemTitle").textContent = "Nuevo elemento";
+    }
+
+    document.getElementById("btnNuevoItem").addEventListener("click", openModalItem);
+    document.getElementById("closeModalItem").addEventListener("click", closeModalItem);
+    document.getElementById("cancelModalItem").addEventListener("click", closeModalItem);
+    document.getElementById("overlayItem").addEventListener("click", e => { if (e.target===e.currentTarget) closeModalItem(); });
+
+    // EDIT ITEM
+    window.editItem = function(id) {
+      const it = items.find(i => i.id === id);
+      if (!it) return;
+      document.getElementById("modalItemTitle").textContent  = "Editar elemento";
+      document.getElementById("itemId").value       = id;
+      document.getElementById("itemCodigo").value   = it.codigo    || "";
+      document.getElementById("itemNombre").value   = it.nombre    || "";
+      document.getElementById("itemCategoria").value= it.categoria || "";
+      document.getElementById("itemUnidad").value   = it.unidad    || "pieza";
+      document.getElementById("itemEstado").value   = it.estado    || "activo";
+      document.getElementById("itemTotal").value    = it.stock_total ?? "";
+      document.getElementById("itemBodega").value   = it.en_bodega  ?? "";
+      document.getElementById("itemNotas").value    = it.notas     || "";
+      openModalItem();
+    };
+
+    // SAVE ITEM
+    document.getElementById("saveItem").addEventListener("click", async () => {
+      const id       = document.getElementById("itemId").value;
+      const nombre   = document.getElementById("itemNombre").value.trim();
+      const codigo   = document.getElementById("itemCodigo").value.trim();
+      const categoria= document.getElementById("itemCategoria").value;
+      const unidad   = document.getElementById("itemUnidad").value;
+      const estado   = document.getElementById("itemEstado").value;
+      const total    = parseInt(document.getElementById("itemTotal").value)  || 0;
+      const bodega   = parseInt(document.getElementById("itemBodega").value) || 0;
+      const notas    = document.getElementById("itemNotas").value.trim();
+
+      if (!nombre)    { toast("El nombre es obligatorio.", "err"); return; }
+      if (!categoria) { toast("Selecciona una categoría.", "err"); return; }
+      if (bodega > total) { toast("Bodega no puede superar el stock total.", "err"); return; }
+
+      const data = { codigo, nombre, categoria, unidad, estado, stock_total:total, en_bodega:bodega, notas, updatedAt:serverTimestamp() };
+
+      try {
+        if (id) {
+          await setDoc(doc(db, "inventario", id), data, { merge:true });
+          toast("Elemento actualizado ✓");
+        } else {
+          data.createdAt = serverTimestamp();
+          await addDoc(collection(db, "inventario"), data);
+          toast("Elemento agregado ✓");
+        }
+        closeModalItem();
+      } catch(e) { console.error(e); toast("Error al guardar. Intenta de nuevo.", "err"); }
+    });
+
+    // DELETE ITEM
+    window.askDelete = function(id, nombre) {
+      deleteId = id;
+      document.getElementById("delNombre").textContent = nombre;
+      document.getElementById("overlayDel").classList.add("open");
+    };
+    document.getElementById("closeModalDel").addEventListener("click", () => { document.getElementById("overlayDel").classList.remove("open"); deleteId=null; });
+    document.getElementById("cancelDel").addEventListener("click",     () => { document.getElementById("overlayDel").classList.remove("open"); deleteId=null; });
+    document.getElementById("confirmDel").addEventListener("click", async () => {
+      if (!deleteId) return;
+      try {
+        await deleteDoc(doc(db, "inventario", deleteId));
+        toast("Elemento eliminado.");
+        document.getElementById("overlayDel").classList.remove("open");
+        deleteId = null;
+      } catch(e) { toast("Error al eliminar.", "err"); }
+    });
+
+    // MODAL CATEGORÍAS
+    document.getElementById("btnGestionarCats").addEventListener("click", () => document.getElementById("overlayCats").classList.add("open"));
+    const closeCats = () => document.getElementById("overlayCats").classList.remove("open");
+    document.getElementById("closeModalCats").addEventListener("click", closeCats);
+    document.getElementById("closeCatsBtn").addEventListener("click",   closeCats);
+    document.getElementById("overlayCats").addEventListener("click", e => { if (e.target===e.currentTarget) closeCats(); });
+
+    document.getElementById("btnAddCat").addEventListener("click", async () => {
+      const nombre = document.getElementById("newCatNombre").value.trim();
+      if (!nombre) return;
+      if (categorias.find(c => c.nombre.toLowerCase() === nombre.toLowerCase())) { toast("Esa categoría ya existe.", "err"); return; }
+      try {
+        await addDoc(collection(db, "categorias"), { nombre, createdAt:serverTimestamp() });
+        document.getElementById("newCatNombre").value = "";
+        toast("Categoría agregada ✓");
+      } catch(e) { toast("Error al agregar categoría.", "err"); }
+    });
+
+    window.deleteCat = async function(id, nombre) {
+      if (!confirm(`¿Eliminar la categoría "${nombre}"?`)) return;
+      try {
+        await deleteDoc(doc(db, "categorias", id));
+        toast("Categoría eliminada.");
+      } catch(e) { toast("Error al eliminar categoría.", "err"); }
+    };
+
+    // FILTROS
+    document.getElementById("invSearch").addEventListener("input",    renderInventario);
+    document.getElementById("invCatFilter").addEventListener("change", renderInventario);
+
+    // ENTER en nueva categoría
+    document.getElementById("newCatNombre").addEventListener("keydown", e => {
+      if (e.key === "Enter") document.getElementById("btnAddCat").click();
+    });
   </script>
 </body>
 </html>
