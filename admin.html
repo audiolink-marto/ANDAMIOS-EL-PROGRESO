@@ -1934,7 +1934,16 @@
         const ref     = doc(db, "inventario", it.item_id);
 
         if (buenos > 0) batch.update(ref, { [field]: increment(buenos) });
-        if (defect > 0) batch.update(ref, { en_mantenimiento: increment(defect) });
+        if (defect > 0) {
+          batch.update(ref, { en_mantenimiento: increment(defect) });
+          const mantRef = doc(collection(db, "mantenimiento"));
+          batch.set(mantRef, {
+            item_id: it.item_id, item_nombre: it.nombre||"", item_codigo: it.codigo||"",
+            cantidad: defect, fecha_entrada: new Date().toISOString().split("T")[0],
+            estado: "en_proceso", descripcion: `Retorno remisión #${r.numero||""} — piezas defectuosas`,
+            origen: it.origen, createdAt: serverTimestamp()
+          });
+        }
 
         return { ...it, cantidad_retorno: retCant, defectuosas: defect };
       });
