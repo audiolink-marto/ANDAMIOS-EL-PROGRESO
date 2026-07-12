@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central v4.5</title>
+  <title>Admin — El Progreso Central v4.6</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -84,6 +84,9 @@
     .panel{background:var(--surf);border:1px solid var(--brd);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
     .panel-header{padding:14px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
     .panel-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+    .rem-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .rem-info-item .label{font-size:11px;font-weight:600;letter-spacing:.10em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+    .rem-info-item .value{font-size:15px;color:var(--txt);}
 
     /* BADGES */
     .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
@@ -501,21 +504,46 @@
           </div>
         </div>
 
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Cartera pendiente</div>
+            <span class="badge badge-warn" id="carteraCountBadge">0 remisiones</span>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Remisión</th><th>Cliente</th><th>Salida</th><th>Días</th><th>Total</th><th>Abonado</th><th>Saldo</th><th></th></tr>
+              </thead>
+              <tbody id="carteraTbody">
+                <tr><td colspan="8"><div class="empty-state">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <p>No hay saldos pendientes. Cartera al día ✓</p>
+                </div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="toolbar">
           <div class="search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="pagosSearch" placeholder="Buscar por # remisión o cliente..." />
           </div>
+          <button class="btn btn-primary" id="btnRegistrarPago">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Registrar pago
+          </button>
         </div>
 
         <div class="panel">
+          <div class="panel-header"><div class="panel-title">Historial de pagos</div></div>
           <div class="tbl-wrap">
             <table>
               <thead>
-                <tr><th>Remisión</th><th>Cliente</th><th>Monto</th><th>Fecha</th><th>Notas</th></tr>
+                <tr><th>Remisión</th><th>Cliente</th><th>Monto</th><th>Método</th><th>Fecha</th><th>Notas</th></tr>
               </thead>
               <tbody id="pagosTbody">
-                <tr><td colspan="5"><div class="empty-state">
+                <tr><td colspan="6"><div class="empty-state">
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                   <p>No hay pagos registrados aún.</p>
                 </div></td></tr>
@@ -936,8 +964,16 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="form-label">Método</label>
+          <select class="form-select" id="pagoMetodo">
+            <option value="efectivo">Efectivo</option>
+            <option value="transferencia">Transferencia</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Notas (opcional)</label>
-          <textarea class="form-textarea" id="pagoNotas" placeholder="Efectivo, transferencia, cheque..."></textarea>
+          <textarea class="form-textarea" id="pagoNotas" placeholder="Ej: recibo #, referencia de transferencia..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -1554,15 +1590,43 @@
     function renderPagos() {
       // KPIs
       const totalCobrado   = pagos.reduce((s,p) => s + (p.monto||0), 0);
-      const saldoPendiente = remisiones
-        .filter(r => r.estado !== "cancelada" && r.estado !== "pagada")
-        .reduce((s,r) => s + Math.max(0,(r.valor_total||0)-(r.abono||0)), 0);
+      const carteraLista   = remisiones
+        .filter(r => r.estado !== "cancelada" && r.estado !== "pagada" && ((r.valor_total||0)-(r.abono||0)) > 0)
+        .map(r => ({ ...r, saldo: Math.max(0,(r.valor_total||0)-(r.abono||0)) }))
+        .sort((a,b) => (a.fecha_salida||"").localeCompare(b.fecha_salida||""));
+      const saldoPendiente = carteraLista.reduce((s,r) => s + r.saldo, 0);
 
       document.getElementById("kpi-pagos-cobrado").textContent = fmt(totalCobrado);
       document.getElementById("kpi-pagos-saldo").textContent   = fmt(saldoPendiente);
       document.getElementById("kpi-pagos-count").textContent   = pagos.length;
 
-      // Tabla
+      // Cartera pendiente
+      document.getElementById("carteraCountBadge").textContent = `${carteraLista.length} remisión${carteraLista.length===1?"":"es"}`;
+      const carteraTbody = document.getElementById("carteraTbody");
+      if (!carteraLista.length) {
+        carteraTbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <p>No hay saldos pendientes. Cartera al día ✓</p>
+        </div></td></tr>`;
+      } else {
+        const hoy = new Date();
+        carteraTbody.innerHTML = carteraLista.map(r => {
+          const dias = r.fecha_salida ? Math.floor((hoy - new Date(r.fecha_salida+"T00:00:00")) / 86400000) : "—";
+          const diasBadge = dias === "—" ? "" : dias > 30 ? "badge-red" : dias > 15 ? "badge-warn" : "badge-muted";
+          return `<tr>
+            <td class="td-mono">${r.numero||"—"}</td>
+            <td><strong>${r.cliente_nombre||"—"}</strong></td>
+            <td class="td-muted">${fmtDate(r.fecha_salida)}</td>
+            <td>${dias==="—"?"—":`<span class="badge ${diasBadge}">${dias} d</span>`}</td>
+            <td class="td-num">${fmt(r.valor_total)}</td>
+            <td class="td-num" style="color:var(--success)">${fmt(r.abono)}</td>
+            <td class="td-num" style="color:var(--warn)">${fmt(r.saldo)}</td>
+            <td><button class="btn btn-primary btn-sm" onclick="openPago('${r.id}')">Cobrar</button></td>
+          </tr>`;
+        }).join("");
+      }
+
+      // Historial
       const search   = document.getElementById("pagosSearch").value.toLowerCase();
       const filtered = pagos.filter(p =>
         (p.remision_numero||"").toLowerCase().includes(search) ||
@@ -1571,23 +1635,33 @@
 
       const tbody = document.getElementById("pagosTbody");
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           <p>No hay pagos registrados aún.</p>
         </div></td></tr>`;
         return;
       }
 
+      const metodoLabel = m => ({efectivo:"Efectivo",transferencia:"Transferencia",otro:"Otro"}[m] || (m||"—"));
       tbody.innerHTML = filtered.map(p => `<tr>
         <td class="td-mono">${p.remision_numero||"—"}</td>
         <td><strong>${p.cliente_nombre||"—"}</strong></td>
         <td class="td-num" style="color:var(--success)">${fmt(p.monto)}</td>
+        <td class="td-muted">${metodoLabel(p.metodo_pago)}</td>
         <td class="td-muted">${fmtDate(p.fecha)}</td>
         <td class="td-muted">${p.notas||"—"}</td>
       </tr>`).join("");
     }
 
     document.getElementById("pagosSearch").addEventListener("input", renderPagos);
+    document.getElementById("btnRegistrarPago").addEventListener("click", () => {
+      // Sin remisión preseleccionada: usa la primera con saldo, o avisa si no hay ninguna
+      const primeraConSaldo = remisiones
+        .filter(r => r.estado !== "cancelada" && r.estado !== "pagada" && ((r.valor_total||0)-(r.abono||0)) > 0)
+        .sort((a,b) => (a.fecha_salida||"").localeCompare(b.fecha_salida||""))[0];
+      if (!primeraConSaldo) { toast("No hay remisiones con saldo pendiente.", "err"); return; }
+      openPago(primeraConSaldo.id);
+    });
 
     // ════════════════════════════════════
     // MODAL REMISIÓN — abrir / cerrar
@@ -1915,6 +1989,7 @@
       document.getElementById("pagoInfoSaldo").textContent    = fmt(saldo);
       document.getElementById("pagoMonto").value              = "";
       document.getElementById("pagoFecha").value              = new Date().toISOString().split("T")[0];
+      document.getElementById("pagoMetodo").value              = "efectivo";
       document.getElementById("pagoNotas").value              = "";
       document.getElementById("overlayPago").classList.add("open");
     };
@@ -1930,6 +2005,7 @@
       const id    = document.getElementById("pagoRemId").value;
       const monto = parseFloat(document.getElementById("pagoMonto").value) || 0;
       const fecha = document.getElementById("pagoFecha").value;
+      const metodo= document.getElementById("pagoMetodo").value;
       const notas = document.getElementById("pagoNotas").value.trim();
 
       if (!id) return;
@@ -1956,7 +2032,9 @@
           cliente_nombre:  r.cliente_nombre || "",
           monto,
           fecha,
+          metodo_pago: metodo,
           notas,
+          registrado_por: "admin",
           createdAt: serverTimestamp()
         });
 
