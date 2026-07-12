@@ -1720,7 +1720,6 @@
       document.getElementById("remClienteNombre").value    = r.cliente_nombre    || "";
       document.getElementById("remClienteTel").value       = r.cliente_telefono  || "";
       document.getElementById("remDireccion").value        = r.direccion         || "";
-      document.getElementById("remConductor").value        = r.conductor         || "";
       document.getElementById("remModalidad").value        = r.modalidad_cobro   || "dia";
       document.getElementById("remFechaSalida").value      = r.fecha_salida      || "";
       document.getElementById("remFechaRetorno").value     = r.fecha_retorno_estimada || "";
@@ -1863,21 +1862,34 @@
         const batch = writeBatch(db);
 
         if (id) {
-          // Edición: revertir stock anterior y aplicar nuevo
+          // Edición: calcular el ajuste NETO por elemento (revertir lo anterior + aplicar lo nuevo)
+          // en una sola escritura por documento — Firestore no permite dos writes al mismo
+          // documento dentro de un mismo batch.
           const prev = remisiones.find(x => x.id === id);
+          const deltas = {}; // key: `${item_id}|${origen}` → { field, delta }
+
           if (prev && prev.items) {
             for (const pi of prev.items) {
-              const ref = doc(db, "inventario", pi.item_id);
               const field = pi.origen === "principal" ? "en_bodega" : "en_bodega_aux";
-              batch.update(ref, { [field]: increment(pi.cantidad_salida) });
+              const key = `${pi.item_id}|${pi.origen}`;
+              deltas[key] = deltas[key] || { item_id: pi.item_id, field, delta: 0 };
+              deltas[key].delta += pi.cantidad_salida; // revertir: devuelve al inventario
             }
           }
-          // Descontar nuevos
           for (const ni of remItems) {
-            const ref = doc(db, "inventario", ni.item_id);
             const field = ni.origen === "principal" ? "en_bodega" : "en_bodega_aux";
-            batch.update(ref, { [field]: increment(-ni.cantidad_salida) });
+            const key = `${ni.item_id}|${ni.origen}`;
+            deltas[key] = deltas[key] || { item_id: ni.item_id, field, delta: 0 };
+            deltas[key].delta -= ni.cantidad_salida; // aplicar: descuenta del inventario
           }
+
+          for (const key in deltas) {
+            const d = deltas[key];
+            if (d.delta === 0) continue; // sin cambio neto, no escribir
+            const ref = doc(db, "inventario", d.item_id);
+            batch.update(ref, { [d.field]: increment(d.delta) });
+          }
+
           batch.update(doc(db, "remisiones", id), data);
           await batch.commit();
           toast("Remisión actualizada ✓");

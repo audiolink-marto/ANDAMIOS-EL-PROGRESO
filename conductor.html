@@ -568,6 +568,11 @@
       const b = remBadge(r.estado);
       const saldo = Math.max(0, (r.valor_total||0) - (r.abono||0));
       const estadoEntrega = r.entrega_confirmada ? '<span class="badge badge-green">Entregada</span>' : '<span class="badge badge-warn">Sin entregar</span>';
+      const estadoRecogida = r.estado === "activa" && r.entrega_confirmada
+        ? (r.recogida_confirmada_conductor
+            ? '<span class="badge badge-info">Recogida confirmada · esperando bodega</span>'
+            : '<span class="badge badge-muted">Pendiente de recogida</span>')
+        : "";
       return `
       <div class="rem-card">
         <div class="rem-top">
@@ -585,6 +590,7 @@
           <div class="rem-meta-item">Salida: <b>${fmtDate(r.fecha_salida)}</b></div>
           <div class="rem-meta-item">Saldo: <b>${fmt(saldo)}</b></div>
           <div class="rem-meta-item">${estadoEntrega}</div>
+          ${estadoRecogida ? `<div class="rem-meta-item">${estadoRecogida}</div>` : ""}
         </div>
         ${r.direccion ? `<div class="rem-actions">
           <button class="btn btn-ghost" onclick="abrirWaze('${escapeAttr(r.direccion)}')">
