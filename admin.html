@@ -331,6 +331,14 @@
     <header class="header">
       <div class="header-title" id="headerTitle">Dashboard</div>
       <div class="header-right">
+        <a href="bodega.html" target="_blank" class="btn-logout" style="text-decoration:none;" title="Ver como bodega">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          Bodega
+        </a>
+        <a href="conductor.html" target="_blank" class="btn-logout" style="text-decoration:none;" title="Ver como conductor">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Conductor
+        </a>
         <div class="user-chip">
           <div class="user-avatar">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -1346,6 +1354,13 @@
     // ─── Helpers ───
     const fmt = n => "$" + (n||0).toLocaleString("es-CO");
     const fmtDate = s => s ? s.split("-").reverse().join("/") : "—";
+    // Deriva el estado del ítem automáticamente según cuántas unidades están en mantenimiento.
+    // "baja" es una decisión manual del admin y nunca se sobreescribe aquí.
+    function calcularEstadoAuto(it, nuevoEnMant) {
+      if (it.estado === "baja") return "baja";
+      const total = it.stock_total || 0;
+      return (total > 0 && nuevoEnMant >= total) ? "mantenimiento" : "activo";
+    }
 
     function toast(msg, tipo = "ok") {
       const el = document.getElementById("toast");
@@ -1935,7 +1950,9 @@
 
         if (buenos > 0) batch.update(ref, { [field]: increment(buenos) });
         if (defect > 0) {
-          batch.update(ref, { en_mantenimiento: increment(defect) });
+          const invIt = items.find(x => x.id === it.item_id) || {};
+          const nuevoEnMant = (invIt.en_mantenimiento||0) + defect;
+          batch.update(ref, { en_mantenimiento: increment(defect), estado: calcularEstadoAuto(invIt, nuevoEnMant) });
           const mantRef = doc(collection(db, "mantenimiento"));
           batch.set(mantRef, {
             item_id: it.item_id, item_nombre: it.nombre||"", item_codigo: it.codigo||"",
@@ -2568,7 +2585,12 @@
         const batch = writeBatch(db);
         batch.update(doc(db, "mantenimiento", id), { estado:"entregado", fecha_entrega_real: new Date().toISOString().split("T")[0], updatedAt: serverTimestamp() });
         if (m.item_id) {
-          batch.update(doc(db, "inventario", m.item_id), { en_mantenimiento: increment(-(m.cantidad||0)), en_bodega: increment(m.cantidad||0) });
+          const invIt = items.find(x => x.id === m.item_id) || {};
+          const nuevoEnMant = Math.max(0, (invIt.en_mantenimiento||0) - (m.cantidad||0));
+          batch.update(doc(db, "inventario", m.item_id), {
+            en_mantenimiento: increment(-(m.cantidad||0)), en_bodega: increment(m.cantidad||0),
+            estado: calcularEstadoAuto(invIt, nuevoEnMant)
+          });
         }
         await batch.commit();
         toast("Entregado. Stock devuelto al inventario ✓");
@@ -2610,7 +2632,13 @@
           const newRef = doc(collection(db, "mantenimiento"));
           batch.set(newRef, data);
           // Descontar del inventario solo si es entrada manual nueva
-          if (it) batch.update(doc(db, "inventario", itemId), { en_bodega: increment(-cantidad), en_mantenimiento: increment(cantidad) });
+          if (it) {
+            const nuevoEnMant = (it.en_mantenimiento||0) + cantidad;
+            batch.update(doc(db, "inventario", itemId), {
+              en_bodega: increment(-cantidad), en_mantenimiento: increment(cantidad),
+              estado: calcularEstadoAuto(it, nuevoEnMant)
+            });
+          }
         }
         await batch.commit();
         toast(id ? "Orden actualizada ✓" : "Orden creada ✓");

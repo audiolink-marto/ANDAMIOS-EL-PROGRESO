@@ -446,6 +446,13 @@
     const hoyISO   = () => new Date().toISOString().split("T")[0];
     const todayLabel = () => new Date().toLocaleDateString("es-CO", { weekday:"long", day:"numeric", month:"long" });
     const escapeAttr = s => (s||"").replace(/'/g,"\\'");
+    // Deriva el estado del ítem automáticamente según cuántas unidades están en mantenimiento.
+    // "baja" es una decisión manual del admin y nunca se sobreescribe aquí.
+    function calcularEstadoAuto(it, nuevoEnMant) {
+      if (it.estado === "baja") return "baja";
+      const total = it.stock_total || 0;
+      return (total > 0 && nuevoEnMant >= total) ? "mantenimiento" : "activo";
+    }
 
     function toast(msg, tipo = "ok") {
       const el = document.getElementById("toast");
@@ -460,11 +467,13 @@
       if (!user) { window.location.href = "index.html"; return; }
       try {
         const snap = await getDoc(doc(db, "usuarios", user.uid));
-        if (!snap.exists() || snap.data().rol !== "bodega") {
+        const rolUsuario = snap.exists() ? snap.data().rol : null;
+        if (!snap.exists() || (rolUsuario !== "bodega" && rolUsuario !== "admin")) {
           await signOut(auth); window.location.href = "index.html"; return;
         }
         staffNombre = snap.data().nombre || user.email;
-        document.getElementById("fechaHoyLbl").textContent = todayLabel();
+        document.getElementById("fechaHoyLbl").textContent =
+          rolUsuario === "admin" ? todayLabel() + " · Vista de administrador" : todayLabel();
         document.getElementById("gate").classList.add("hidden");
         document.getElementById("appHeader").classList.remove("hidden");
         document.getElementById("appMain").classList.remove("hidden");
@@ -751,7 +760,18 @@
           const ref     = doc(db, "inventario", it.item_id);
 
           if (buenos > 0) batch.update(ref, { [field]: increment(buenos) });
-          if (defect > 0) batch.update(ref, { en_mantenimiento: increment(defect) });
+          if (defect > 0) {
+            const invIt = items.find(x => x.id === it.item_id) || {};
+            const nuevoEnMant = (invIt.en_mantenimiento||0) + defect;
+            batch.update(ref, { en_mantenimiento: increment(defect), estado: calcularEstadoAuto(invIt, nuevoEnMant) });
+            const mantRef = doc(collection(db, "mantenimiento"));
+            batch.set(mantRef, {
+              item_id: it.item_id, item_nombre: it.nombre||"", item_codigo: it.codigo||"",
+              cantidad: defect, fecha_entrada: hoyISO(), estado: "en_proceso",
+              descripcion: `Recepción remisión #${r.numero||""} — piezas defectuosas`,
+              origen: it.origen, createdAt: serverTimestamp()
+            });
+          }
 
           return { ...it, cantidad_retorno: retCant, defectuosas: defect };
         });
@@ -825,7 +845,11 @@
           descripcion: desc, origen, enviado_por: staffNombre, createdAt: serverTimestamp()
         });
         const field = origen === "principal" ? "en_bodega" : "en_bodega_aux";
-        batch.update(doc(db, "inventario", itemId), { [field]: increment(-cantidad), en_mantenimiento: increment(cantidad) });
+        const nuevoEnMant = (it?.en_mantenimiento||0) + cantidad;
+        batch.update(doc(db, "inventario", itemId), {
+          [field]: increment(-cantidad), en_mantenimiento: increment(cantidad),
+          estado: calcularEstadoAuto(it||{}, nuevoEnMant)
+        });
         await batch.commit();
 
         toast("Enviado a mantenimiento ✓");
@@ -874,7 +898,12 @@
         batch.update(doc(db, "mantenimiento", id), { estado:"entregado", fecha_entrega_real: hoyISO(), updatedAt: serverTimestamp() });
         if (m.item_id) {
           const field = m.origen === "principal" ? "en_bodega" : "en_bodega_aux";
-          batch.update(doc(db, "inventario", m.item_id), { en_mantenimiento: increment(-(m.cantidad||0)), [field]: increment(m.cantidad||0) });
+          const invIt = items.find(x => x.id === m.item_id) || {};
+          const nuevoEnMant = Math.max(0, (invIt.en_mantenimiento||0) - (m.cantidad||0));
+          batch.update(doc(db, "inventario", m.item_id), {
+            en_mantenimiento: increment(-(m.cantidad||0)), [field]: increment(m.cantidad||0),
+            estado: calcularEstadoAuto(invIt, nuevoEnMant)
+          });
         }
         await batch.commit();
         toast("Entregado. Stock devuelto a bodega ✓");
