@@ -453,6 +453,13 @@
       const total = it.stock_total || 0;
       return (total > 0 && nuevoEnMant >= total) ? "mantenimiento" : "activo";
     }
+    const LOCK_MINUTOS = 10; // candado de concurrencia: minutos antes de considerarlo abandonado
+    function lockActivo(r) {
+      if (!r.recepcion_en_proceso_por || !r.recepcion_en_proceso_desde) return null;
+      const mins = (Date.now() - new Date(r.recepcion_en_proceso_desde).getTime()) / 60000;
+      if (mins > LOCK_MINUTOS) return null;
+      return { por: r.recepcion_en_proceso_por, mins };
+    }
 
     function toast(msg, tipo = "ok") {
       const el = document.getElementById("toast");
@@ -689,23 +696,33 @@
       }
       // Priorizar los que el conductor ya confirmó recogida
       const ordenados = [...pendientes].sort((a,b) => (b.recogida_confirmada_conductor?1:0) - (a.recogida_confirmada_conductor?1:0));
-      cont.innerHTML = ordenados.map(r => `
+      cont.innerHTML = ordenados.map(r => {
+        const lock = lockActivo(r);
+        return `
         <div class="picker-item" onclick="seleccionarRecepcion('${r.id}')">
           <div class="picker-item-info">
             <b>#${r.numero||"—"} · ${r.cliente_nombre||"—"}</b>
             <div>${(r.items||[]).length} ítem(s) · Conductor: ${r.conductor||"—"}</div>
             <div class="picker-item-badges">
               ${r.recogida_confirmada_conductor ? '<span class="badge badge-gold">Conductor confirmó recogida</span>' : '<span class="badge badge-muted">Sin confirmar por conductor</span>'}
+              ${lock ? `<span class="badge badge-red">${lock.por} la está procesando</span>` : ""}
             </div>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
-      `).join("");
+      `;}).join("");
     }
 
     window.seleccionarRecepcion = function(id) {
       const r = remisiones.find(x => x.id === id);
       if (!r) return;
+
+      const lock = lockActivo(r);
+      if (lock && lock.por !== staffNombre) {
+        toast(`${lock.por} está recibiendo esta remisión ahora mismo. Intenta en unos minutos.`, "err");
+        return;
+      }
+
       remIdRecepcion = id;
       document.getElementById("recepcionNotas").value = "";
       document.getElementById("recepcionClienteLbl").textContent = `#${r.numero||"—"} · ${r.cliente_nombre||"—"}`;
@@ -732,9 +749,24 @@
 
       document.getElementById("recepcionPicker").classList.add("hidden");
       document.getElementById("recepcionForm").classList.remove("hidden");
+
+      // Toma el candado para evitar que alguien más procese esta misma remisión
+      updateDoc(doc(db, "remisiones", id), {
+        recepcion_en_proceso_por: staffNombre,
+        recepcion_en_proceso_desde: new Date().toISOString()
+      }).catch(() => {});
     };
 
+    function liberarCandadoRecepcion() {
+      if (!remIdRecepcion) return;
+      updateDoc(doc(db, "remisiones", remIdRecepcion), {
+        recepcion_en_proceso_por: null,
+        recepcion_en_proceso_desde: null
+      }).catch(() => {});
+    }
+
     document.getElementById("cancelRecepcion").addEventListener("click", () => {
+      liberarCandadoRecepcion();
       remIdRecepcion = null;
       document.getElementById("recepcionForm").classList.add("hidden");
       document.getElementById("recepcionPicker").classList.remove("hidden");
@@ -783,6 +815,8 @@
           fecha_retorno_real: hoyISO(),
           recibido_por_bodega: true,
           recibido_por: staffNombre,
+          recepcion_en_proceso_por: null,
+          recepcion_en_proceso_desde: null,
           updatedAt: serverTimestamp()
         });
 

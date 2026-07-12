@@ -428,6 +428,10 @@
             <option value="pagada">Pagada</option>
             <option value="cancelada">Cancelada</option>
           </select>
+          <button class="btn btn-ghost" id="btnExportarRemisiones">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
           <button class="btn btn-primary" id="btnNuevaRemision">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Nueva remisión
@@ -537,6 +541,10 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="pagosSearch" placeholder="Buscar por # remisión o cliente..." />
           </div>
+          <button class="btn btn-ghost" id="btnExportarPagos">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
           <button class="btn btn-primary" id="btnRegistrarPago">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Registrar pago
@@ -1354,6 +1362,14 @@
     // ─── Helpers ───
     const fmt = n => "$" + (n||0).toLocaleString("es-CO");
     const fmtDate = s => s ? s.split("-").reverse().join("/") : "—";
+    let currentUserLabel = "";
+    const LOCK_MINUTOS = 10; // candado de concurrencia: minutos antes de considerarlo abandonado
+    function lockActivo(r) {
+      if (!r.recepcion_en_proceso_por || !r.recepcion_en_proceso_desde) return null;
+      const mins = (Date.now() - new Date(r.recepcion_en_proceso_desde).getTime()) / 60000;
+      if (mins > LOCK_MINUTOS) return null; // candado viejo/abandonado, se ignora
+      return { por: r.recepcion_en_proceso_por, mins };
+    }
     // Deriva el estado del ítem automáticamente según cuántas unidades están en mantenimiento.
     // "baja" es una decisión manual del admin y nunca se sobreescribe aquí.
     function calcularEstadoAuto(it, nuevoEnMant) {
@@ -1370,6 +1386,56 @@
       toastTimer = setTimeout(() => el.classList.remove("show"), 3200);
     }
 
+    // ─── Exportar CSV ───
+    function descargarCSV(filename, headers, rows) {
+      const escapar = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const lineas = [headers.map(escapar).join(",")]
+        .concat(rows.map(row => row.map(escapar).join(",")));
+      const csv = "\uFEFF" + lineas.join("\r\n"); // BOM para que Excel abra bien los acentos
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById("btnExportarRemisiones").addEventListener("click", () => {
+      const search = document.getElementById("remSearch").value.toLowerCase();
+      const estF   = document.getElementById("remEstFilter").value;
+      const filtered = remisiones.filter(r => {
+        const ms = (r.numero||"").toLowerCase().includes(search) || (r.cliente_nombre||"").toLowerCase().includes(search);
+        const me = !estF || r.estado === estF;
+        return ms && me;
+      });
+      if (!filtered.length) { toast("No hay remisiones para exportar.", "err"); return; }
+      const headers = ["Número","Cliente","Teléfono","Dirección","Conductor","Fecha salida","Fecha retorno estimada","Modalidad","Valor total","Abono","Saldo","Estado","Sellada"];
+      const rows = filtered.map(r => [
+        r.numero||"", r.cliente_nombre||"", r.cliente_telefono||"", r.direccion||"", r.conductor||"",
+        r.fecha_salida||"", r.fecha_retorno_estimada||"", r.modalidad_cobro||"",
+        r.valor_total||0, r.abono||0, Math.max(0,(r.valor_total||0)-(r.abono||0)),
+        r.estado||"", r.sellada ? "Sí" : "No"
+      ]);
+      descargarCSV(`remisiones_${new Date().toISOString().split("T")[0]}.csv`, headers, rows);
+      toast(`${filtered.length} remisión(es) exportada(s) ✓`);
+    });
+
+    document.getElementById("btnExportarPagos").addEventListener("click", () => {
+      const search = document.getElementById("pagosSearch").value.toLowerCase();
+      const filtered = pagos.filter(p =>
+        (p.remision_numero||"").toLowerCase().includes(search) || (p.cliente_nombre||"").toLowerCase().includes(search)
+      );
+      if (!filtered.length) { toast("No hay pagos para exportar.", "err"); return; }
+      const metodoLabel = m => ({efectivo:"Efectivo",transferencia:"Transferencia",otro:"Otro"}[m] || (m||"—"));
+      const headers = ["Remisión","Cliente","Monto","Método","Fecha","Notas","Registrado por"];
+      const rows = filtered.map(p => [
+        p.remision_numero||"", p.cliente_nombre||"", p.monto||0, metodoLabel(p.metodo_pago),
+        p.fecha||"", p.notas||"", p.registrado_por||""
+      ]);
+      descargarCSV(`pagos_${new Date().toISOString().split("T")[0]}.csv`, headers, rows);
+      toast(`${filtered.length} pago(s) exportado(s) ✓`);
+    });
+
     // ─── Auth ───
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = "index.html"; return; }
@@ -1378,6 +1444,7 @@
         await signOut(auth); window.location.href = "index.html"; return;
       }
       document.getElementById("userEmail").textContent = user.email;
+      currentUserLabel = "Admin (" + user.email + ")";
       initListeners();
     });
 
@@ -1917,6 +1984,13 @@
     window.openRetorno = function(id) {
       const r = remisiones.find(x => x.id === id);
       if (!r || !r.items?.length) { toast("Esta remisión no tiene ítems.", "warn"); return; }
+
+      const lock = lockActivo(r);
+      if (lock && lock.por !== currentUserLabel) {
+        toast(`${lock.por} está procesando esta remisión ahora mismo. Intenta en unos minutos.`, "err");
+        return;
+      }
+
       document.getElementById("retornoRemId").value = id;
       document.getElementById("retornoNotas").value = "";
 
@@ -1939,11 +2013,26 @@
       `).join("");
 
       document.getElementById("overlayRetorno").classList.add("open");
+
+      // Toma el candado para evitar que otro usuario procese esta remisión al mismo tiempo
+      updateDoc(doc(db, "remisiones", id), {
+        recepcion_en_proceso_por: currentUserLabel,
+        recepcion_en_proceso_desde: new Date().toISOString()
+      }).catch(() => {});
     };
 
-    document.getElementById("closeModalRetorno").addEventListener("click", () => document.getElementById("overlayRetorno").classList.remove("open"));
-    document.getElementById("cancelRetorno").addEventListener("click",     () => document.getElementById("overlayRetorno").classList.remove("open"));
-    document.getElementById("overlayRetorno").addEventListener("click", e => { if(e.target===e.currentTarget) document.getElementById("overlayRetorno").classList.remove("open"); });
+    function liberarCandadoRetorno() {
+      const id = document.getElementById("retornoRemId").value;
+      if (!id) return;
+      updateDoc(doc(db, "remisiones", id), {
+        recepcion_en_proceso_por: null,
+        recepcion_en_proceso_desde: null
+      }).catch(() => {});
+    }
+
+    document.getElementById("closeModalRetorno").addEventListener("click", () => { liberarCandadoRetorno(); document.getElementById("overlayRetorno").classList.remove("open"); });
+    document.getElementById("cancelRetorno").addEventListener("click",     () => { liberarCandadoRetorno(); document.getElementById("overlayRetorno").classList.remove("open"); });
+    document.getElementById("overlayRetorno").addEventListener("click", e => { if(e.target===e.currentTarget) { liberarCandadoRetorno(); document.getElementById("overlayRetorno").classList.remove("open"); } });
 
     document.getElementById("confirmRetorno").addEventListener("click", async () => {
       const remId = document.getElementById("retornoRemId").value;
@@ -1982,6 +2071,8 @@
         estado: "retornada",
         notas_retorno: notas,
         fecha_retorno_real: new Date().toISOString().split("T")[0],
+        recepcion_en_proceso_por: null,
+        recepcion_en_proceso_desde: null,
         updatedAt: serverTimestamp()
       });
 
