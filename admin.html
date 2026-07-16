@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central v5.4</title>
+  <title>Admin — El Progreso Central v5.5</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -317,10 +317,54 @@
       .user-email{max-width:90px;}
       .item-picker-row{grid-template-columns:1fr 1fr;}
       .td-actions{flex-direction:column;}
+      #tutorial-card{width:calc(100vw - 24px);max-width:316px;}
+      .btn-guia span{display:none;}
     }
+
+    /* ══ TUTORIAL SYSTEM — Admin v5.5 ══ */
+    #tutorial-overlay{position:fixed;inset:0;z-index:9990;background:rgba(5,7,12,0.86);pointer-events:all;transition:opacity .3s;}
+    #tutorial-overlay.oculto{display:none !important;}
+    #tutorial-spotlight-ring{position:fixed;z-index:9995;border-radius:12px;box-shadow:0 0 0 3px var(--gold),0 0 0 7px rgba(245,166,35,0.18),0 0 28px rgba(245,166,35,0.12);pointer-events:none;transition:top .35s cubic-bezier(.4,0,.2,1),left .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1),height .35s cubic-bezier(.4,0,.2,1);}
+    #tutorial-card{position:fixed;z-index:10000;background:var(--surf);border:1px solid var(--gold-brd);border-radius:14px;padding:22px 22px 16px;width:316px;box-shadow:0 20px 60px rgba(0,0,0,0.75),0 0 0 1px rgba(245,166,35,0.07);}
+    #tutorial-card.animando{animation:tut-fade .26s ease;}
+    @keyframes tut-fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+    .tut-progress-bar{display:flex;gap:3px;margin-bottom:16px;}
+    .tut-pip{flex:1;height:3px;border-radius:3px;background:var(--brd);transition:background .3s;}
+    .tut-pip.activo{background:var(--gold);}
+    .tut-pip.hecho{background:rgba(245,166,35,0.32);}
+    #tutorial-emoji{font-size:1.55rem;margin-bottom:8px;line-height:1;}
+    #tutorial-titulo{color:var(--txt);font-size:0.98rem;font-weight:700;margin-bottom:9px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em;}
+    #tutorial-texto{color:var(--muted);font-size:0.81rem;line-height:1.65;margin-bottom:16px;}
+    .tut-nav-row{display:flex;gap:6px;align-items:center;justify-content:space-between;}
+    .tut-step-label{font-size:0.67rem;color:var(--muted);font-weight:600;white-space:nowrap;}
+    .btn-tut-ant{background:none;border:1px solid var(--brd);color:var(--muted);padding:7px 11px;border-radius:8px;font-size:0.76rem;cursor:pointer;transition:all .18s;}
+    .btn-tut-ant:hover{border-color:var(--gold);color:var(--gold);}
+    .btn-tut-sig{background:var(--gold);color:#111318;border:none;padding:7px 14px;border-radius:8px;font-size:0.76rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;}
+    .btn-tut-sig:hover{filter:brightness(1.1);transform:translateY(-1px);}
+    .btn-tut-saltar{background:none;border:none;color:var(--muted);font-size:0.7rem;cursor:pointer;padding:4px 5px;transition:color .18s;white-space:nowrap;}
+    .btn-tut-saltar:hover{color:var(--danger);}
+    .btn-guia{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-brd);padding:8px 13px;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;text-decoration:none;}
+    .btn-guia:hover{background:rgba(245,166,35,0.16);box-shadow:0 0 10px rgba(245,166,35,0.15);}
   </style>
 </head>
 <body>
+
+  <!-- ══ TUTORIAL OVERLAY ══ -->
+  <div id="tutorial-overlay" class="oculto">
+    <div id="tutorial-spotlight-ring" style="display:none;"></div>
+    <div id="tutorial-card">
+      <div class="tut-progress-bar" id="tut-progress-bar"></div>
+      <div id="tutorial-emoji"></div>
+      <div id="tutorial-titulo"></div>
+      <p id="tutorial-texto"></p>
+      <div class="tut-nav-row">
+        <button class="btn-tut-ant" id="btn-tut-ant" onclick="tutorialAnterior()">← Ant.</button>
+        <span class="tut-step-label" id="tut-step-label"></span>
+        <button class="btn-tut-saltar" onclick="tutorialSaltar()">✕ Saltar</button>
+        <button class="btn-tut-sig" id="btn-tut-sig" onclick="tutorialSiguiente()">Siguiente →</button>
+      </div>
+    </div>
+  </div>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
@@ -381,6 +425,9 @@
     <header class="header">
       <div class="header-title" id="headerTitle">Dashboard</div>
       <div class="header-right">
+        <button class="btn-guia" id="btnGuia" onclick="iniciarTutorial(true)" title="Relanzar guía interactiva">
+          🎓 <span>Guía</span>
+        </button>
         <a href="bodega.html" target="_blank" class="btn-logout" style="text-decoration:none;" title="Ver como bodega">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           Bodega
@@ -3578,6 +3625,123 @@
       const win = window.open("","_blank");
       win.document.write(html);
       win.document.close();
+    });
+
+    /* ══════════════════════════════════════════════════
+       TUTORIAL SYSTEM — Admin El Progreso Central v5.5
+       ══════════════════════════════════════════════════ */
+    const _TUT_LLAVE = 'pc_tutorial_admin_v1';
+    let _tutPaso = 0;
+
+    const _TUT_PASOS = [
+      { target: null,                          emoji:'🏗️', titulo:'¡Bienvenido al Panel de Administración!', texto:'Aquí controlas todo el ecosistema de El Progreso Central: remisiones de andamios, inventario, cartera de clientes y reportes. Puedes saltar esta guía y relanzarla cuando quieras desde el botón 🎓 Guía.' },
+      { target:'.sidebar',                     emoji:'🗺️', titulo:'Navegación Principal',                texto:'El menú lateral es tu punto de partida a cada módulo: Dashboard, Agenda, Remisiones, Inventario, Clientes, Mantenimiento, Conductores, Pagos y Reportes. Puedes colapsarlo para ganar espacio en pantalla.' },
+      { target:'#sec-dashboard',               emoji:'📊', titulo:'Dashboard — Vista General',            texto:'Tu resumen del día: remisiones activas, estado de bodega, saldos pendientes de cobro, alertas de mantenimiento y equipo en campo, además de un vistazo rápido a las últimas remisiones e inventario.' },
+      { target:'#sec-remisiones',              emoji:'📋', titulo:'Remisiones',                          texto:'Aquí registras y das seguimiento a cada remisión de andamios: qué se entregó, a quién y en qué estado va. Búscalas por número o cliente, filtra por estado y expórtalas cuando lo necesites.' },
+      { target:'#sec-inventario',               emoji:'📦', titulo:'Inventario',                          texto:'El control maestro de tus equipos y materiales: cantidades disponibles, categorías y códigos. Desde aquí gestionas categorías y das de alta nuevos ítems para que estén listos al momento de remisionar.' },
+      { target:'#sec-pagos',                    emoji:'💰', titulo:'Pagos y Cartera',                     texto:'Controla lo cobrado, lo pendiente y el detalle de cada pago registrado por remisión. La cartera te muestra de un vistazo qué clientes tienen saldos abiertos para que no se te escape ningún cobro.' },
+      { target:'#sec-reportes',                 emoji:'📈', titulo:'Reportes',                            texto:'Genera reportes por periodo con totales de ventas, pagos y tu ranking de mejores clientes — listos para imprimir o exportar y compartir con quien lo necesite.' },
+    ];
+
+    function iniciarTutorial(forzar = false) {
+      const visto = localStorage.getItem(_TUT_LLAVE);
+      if (visto && !forzar) return;
+      _tutPaso = 0;
+      document.getElementById('tutorial-overlay').classList.remove('oculto');
+      _renderTutPaso();
+    }
+
+    function _renderTutPaso() {
+      const paso  = _TUT_PASOS[_tutPaso];
+      const total = _TUT_PASOS.length;
+      const ring  = document.getElementById('tutorial-spotlight-ring');
+      const card  = document.getElementById('tutorial-card');
+
+      card.classList.remove('animando');
+      void card.offsetWidth;
+      card.classList.add('animando');
+
+      document.getElementById('tut-progress-bar').innerHTML =
+        _TUT_PASOS.map((_, i) =>
+          `<div class="tut-pip ${i < _tutPaso ? 'hecho' : i === _tutPaso ? 'activo' : ''}"></div>`
+        ).join('');
+
+      document.getElementById('tutorial-emoji').textContent  = paso.emoji;
+      document.getElementById('tutorial-titulo').textContent = paso.titulo;
+      document.getElementById('tutorial-texto').textContent  = paso.texto;
+      document.getElementById('tut-step-label').textContent  = `${_tutPaso + 1} / ${total}`;
+
+      document.getElementById('btn-tut-ant').style.visibility = _tutPaso === 0 ? 'hidden' : 'visible';
+      document.getElementById('btn-tut-sig').textContent = _tutPaso === total - 1 ? '✅ Finalizar' : 'Siguiente →';
+
+      if (paso.target) {
+        const el = document.querySelector(paso.target);
+        if (el) {
+          el.scrollIntoView({ behavior:'smooth', block:'center' });
+          setTimeout(() => _posicionarTutorial(el, card, ring), 400);
+        } else {
+          ring.style.display = 'none';
+          _centrarCard(card);
+        }
+      } else {
+        ring.style.display = 'none';
+        _centrarCard(card);
+      }
+    }
+
+    function _posicionarTutorial(el, card, ring) {
+      const rect  = el.getBoundingClientRect();
+      const pad   = 8;
+      const vp    = { w: window.innerWidth, h: window.innerHeight };
+      const esMovil = vp.w <= 768;
+      const cardW = esMovil ? Math.min(316, vp.w - 24) : 320;
+      const cardH = 272;
+
+      ring.style.display = 'block';
+      ring.style.top     = (rect.top    - pad) + 'px';
+      ring.style.left    = (rect.left   - pad) + 'px';
+      ring.style.width   = (rect.width  + pad * 2) + 'px';
+      ring.style.height  = (rect.height + pad * 2) + 'px';
+
+      let top;
+      if (rect.bottom + cardH + 20 < vp.h)    top = rect.bottom + 16;
+      else if (rect.top - cardH - 16 > 0)     top = rect.top - cardH - 16;
+      else                                     top = Math.max(12, (vp.h - cardH) / 2);
+
+      let left = esMovil ? 12 : rect.left + (rect.width / 2) - (cardW / 2);
+      if (!esMovil) left = Math.max(12, Math.min(left, vp.w - cardW - 12));
+
+      card.style.top       = top  + 'px';
+      card.style.left      = left + 'px';
+      card.style.transform = 'none';
+    }
+
+    function _centrarCard(card) {
+      card.style.top       = '50%';
+      card.style.left      = '50%';
+      card.style.transform = 'translate(-50%, -50%)';
+    }
+
+    function tutorialSiguiente() {
+      if (_tutPaso >= _TUT_PASOS.length - 1) { terminarTutorial(); return; }
+      _tutPaso++;
+      _renderTutPaso();
+    }
+
+    function tutorialAnterior() {
+      if (_tutPaso > 0) { _tutPaso--; _renderTutPaso(); }
+    }
+
+    function tutorialSaltar()   { terminarTutorial(); }
+
+    function terminarTutorial() {
+      localStorage.setItem(_TUT_LLAVE, '1');
+      document.getElementById('tutorial-overlay').classList.add('oculto');
+      document.getElementById('tutorial-spotlight-ring').style.display = 'none';
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(() => iniciarTutorial(false), 1000);
     });
 
   </script>
