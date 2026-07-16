@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — El Progreso Central v4.6</title>
+  <title>Admin — El Progreso Central v5.3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -235,6 +235,37 @@
     .alerta-meta{font-size:12px;color:var(--muted);margin-top:2px;}
     .alerta-badge{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;white-space:nowrap;}
 
+    /* AGENDA */
+    .agenda-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px;}
+    .agenda-leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+    .agenda-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block;}
+    .agenda-dot.gold{background:var(--gold);}
+    .agenda-dot.info{background:var(--info);}
+    .agenda-dot.warn{background:var(--warn);}
+    .agenda-dot.red{background:var(--danger);}
+    .agenda-header{display:flex;align-items:center;justify-content:center;gap:18px;padding:16px 20px;border-bottom:1px solid var(--brd);}
+    .agenda-mes-label{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;min-width:220px;text-align:center;}
+    .agenda-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;padding:10px 8px 0;}
+    .agenda-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:8px;}
+    .agenda-day{min-height:78px;border:1px solid var(--brd);border-radius:8px;padding:6px;background:var(--surf-2);cursor:default;transition:background var(--trans),border-color var(--trans);}
+    .agenda-day.out{opacity:.35;}
+    .agenda-day.today{border-color:var(--gold-brd);background:var(--gold-bg);}
+    .agenda-day.has-events{cursor:pointer;}
+    .agenda-day.has-events:hover{background:var(--surf-3);}
+    .agenda-day-num{font-size:12px;font-weight:600;color:var(--txt);}
+    .agenda-day.today .agenda-day-num{color:var(--gold);}
+    .agenda-day-dots{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+    .agenda-item-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--brd);}
+    .agenda-item-row:last-child{border-bottom:none;}
+    .agenda-item-main{font-size:13px;font-weight:600;}
+    .agenda-item-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+    .agenda-item-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+    .agenda-item-badge.gold{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-brd);}
+    .agenda-item-badge.info{background:var(--info-bg);color:var(--info);border:1px solid var(--info-brd);}
+    .agenda-item-badge.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-brd);}
+    .agenda-item-badge.red{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-brd);}
+    .agenda-item-go{margin-left:auto;}
+
     /* REPORTES */
     .periodo-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
     .periodo-btn{padding:7px 16px;border-radius:7px;border:1px solid var(--brd);background:var(--surf);color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--trans);}
@@ -288,6 +319,10 @@
       <div class="sb-item active" data-section="dashboard">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         <span class="sb-label">Dashboard</span>
+      </div>
+      <div class="sb-item" data-section="agenda">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="sb-label">Agenda</span>
       </div>
       <div class="sb-item" data-section="remisiones">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -409,6 +444,31 @@
               <tbody id="dash-inv-tbody"><tr><td colspan="8"><div class="empty-state"><p>Cargando...</p></div></td></tr></tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ AGENDA ═══════════════ -->
+      <div class="section" id="sec-agenda">
+        <div class="section-title">Agenda</div>
+        <div class="section-sub">Panorama mensual de salidas, retornos, mantenimiento y cartera</div>
+
+        <div class="agenda-legend">
+          <span class="agenda-leg-item"><span class="agenda-dot gold"></span>Salida</span>
+          <span class="agenda-leg-item"><span class="agenda-dot info"></span>Retorno estimado</span>
+          <span class="agenda-leg-item"><span class="agenda-dot warn"></span>Mantenimiento</span>
+          <span class="agenda-leg-item"><span class="agenda-dot red"></span>Cartera vencida</span>
+        </div>
+
+        <div class="panel">
+          <div class="agenda-header">
+            <button class="btn btn-ghost btn-sm" id="agendaPrev">‹</button>
+            <div class="agenda-mes-label" id="agendaMesLabel">—</div>
+            <button class="btn btn-ghost btn-sm" id="agendaNext">›</button>
+          </div>
+          <div class="agenda-dow">
+            <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+          </div>
+          <div class="agenda-grid" id="agendaGrid"></div>
         </div>
       </div>
 
@@ -1024,6 +1084,24 @@
     </div>
   </div>
 
+  <!-- ═══════════ MODAL: DÍA AGENDA ═══════════ -->
+  <div class="overlay" id="overlayAgendaDia">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="agendaDiaTitle">Compromisos del día</div>
+        <button class="modal-close" id="closeModalAgendaDia">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="agendaDiaLista"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancelAgendaDia">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════ MODAL: ITEM INVENTARIO ═══════════ -->
   <div class="overlay" id="overlayItem">
     <div class="modal">
@@ -1453,7 +1531,7 @@
     });
 
     // ─── Navegación ───
-    const titles = { dashboard:"Dashboard", remisiones:"Remisiones", inventario:"Inventario", clientes:"Clientes", mantenimiento:"Mantenimiento", conductores:"Conductores", pagos:"Pagos", reportes:"Reportes" };
+    const titles = { dashboard:"Dashboard", agenda:"Agenda", remisiones:"Remisiones", inventario:"Inventario", clientes:"Clientes", mantenimiento:"Mantenimiento", conductores:"Conductores", pagos:"Pagos", reportes:"Reportes" };
     document.querySelectorAll(".sb-item[data-section]").forEach(item => {
       item.addEventListener("click", () => {
         const sec = item.dataset.section;
@@ -1484,6 +1562,7 @@
           .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
         renderMantenimiento();
         renderDashboard();
+        renderAgenda();
       });
 
       onSnapshot(collection(db, "conductores"), snap => {
@@ -1516,6 +1595,7 @@
         renderPagos(); // actualiza KPI saldo pendiente en pagos
         renderReportes();
         renderAlertas();
+        renderAgenda();
       });
 
       onSnapshot(collection(db, "pagos"), snap => {
@@ -2147,8 +2227,33 @@
       if (monto > saldo)   { toast(`El monto supera el saldo pendiente (${fmt(saldo)}).`, "err"); return; }
       if (!fecha)          { toast("La fecha es obligatoria.", "err"); return; }
 
-      const nuevoAbono  = (r.abono||0) + monto;
-      const cierraSaldo = nuevoAbono >= (r.valor_total||0);
+      const btnConfirmPago = document.getElementById("confirmPago");
+      btnConfirmPago.disabled = true;
+
+      // Lectura fresca justo antes de comprometer el pago: evita que dos cobros
+      // simultáneos sobre la misma remisión se pisen usando un saldo desactualizado.
+      let rFresco;
+      try {
+        const snapFresco = await getDoc(doc(db, "remisiones", id));
+        if (!snapFresco.exists()) { toast("Esta remisión ya no existe.", "err"); btnConfirmPago.disabled = false; return; }
+        rFresco = snapFresco.data();
+      } catch(e) {
+        console.error(e);
+        toast("No se pudo verificar el saldo actual. Intenta de nuevo.", "err");
+        btnConfirmPago.disabled = false;
+        return;
+      }
+
+      const saldoFresco = Math.max(0, (rFresco.valor_total||0) - (rFresco.abono||0));
+      if (monto > saldoFresco) {
+        toast(`El saldo cambió mientras cobrabas (probablemente otro pago se registró). Saldo actual: ${fmt(saldoFresco)}.`, "err");
+        btnConfirmPago.disabled = false;
+        renderPagos();
+        return;
+      }
+
+      const nuevoAbono  = (rFresco.abono||0) + monto;
+      const cierraSaldo = nuevoAbono >= (rFresco.valor_total||0);
 
       try {
         const batch = writeBatch(db);
@@ -2175,7 +2280,12 @@
         await batch.commit();
         toast(cierraSaldo ? "Saldo cerrado. Remisión marcada como Pagada ✓" : "Pago registrado ✓");
         closePagoModal();
-      } catch(e) { console.error(e); toast("Error al registrar pago.", "err"); }
+      } catch(e) {
+        console.error(e);
+        toast("Error al registrar pago.", "err");
+      } finally {
+        btnConfirmPago.disabled = false;
+      }
     });
 
     // ════════════════════════════════════
@@ -2919,6 +3029,134 @@
       panel.innerHTML = html;
       panel.style.display = "block";
     }
+
+    // ════════════════════════════════════
+    // AGENDA
+    // ════════════════════════════════════
+    const hoyBase = new Date(); hoyBase.setHours(0,0,0,0);
+    let agendaAno = hoyBase.getFullYear();
+    let agendaMes = hoyBase.getMonth(); // 0-indexado
+    const MESES_LARGO = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+
+    window.goToSection = function(sec) {
+      const item = document.querySelector(`.sb-item[data-section="${sec}"]`);
+      if (item) item.click();
+    };
+
+    // Recorre remisiones y mantenimiento (ya en memoria por los onSnapshot) y arma
+    // un mapa { "YYYY-MM-DD": [ {tipo,label,ref} ] } solo para el mes/año pedidos.
+    function getEventosDelMes(ano, mes) {
+      const mapa = {};
+      const push = (fecha, ev) => {
+        if (!fecha) return;
+        const d = new Date(fecha + "T00:00:00");
+        if (d.getFullYear() !== ano || d.getMonth() !== mes) return;
+        if (!mapa[fecha]) mapa[fecha] = [];
+        mapa[fecha].push(ev);
+      };
+
+      remisiones.forEach(r => {
+        if (r.estado === "cancelada") return;
+        push(r.fecha_salida, { tipo: "gold", label: "Salida", r });
+
+        if (r.fecha_retorno_estimada) {
+          const esVencida = r.estado === "activa" &&
+            new Date(r.fecha_retorno_estimada + "T00:00:00") < hoyBase;
+          push(r.fecha_retorno_estimada, {
+            tipo: esVencida ? "red" : "info",
+            label: esVencida ? "Retorno vencido" : "Retorno estimado",
+            r
+          });
+        }
+      });
+
+      mantenimiento.forEach(m => {
+        push(m.fecha_entrada, { tipo: "warn", label: "Entrada a mantenimiento", m });
+      });
+
+      return mapa;
+    }
+
+    function renderAgenda() {
+      const grid = document.getElementById("agendaGrid");
+      const label = document.getElementById("agendaMesLabel");
+      if (!grid || !label) return;
+
+      label.textContent = `${MESES_LARGO[agendaMes]} ${agendaAno}`;
+      const eventosMes = getEventosDelMes(agendaAno, agendaMes);
+
+      const primerDia = new Date(agendaAno, agendaMes, 1);
+      const inicioGrid = new Date(primerDia);
+      inicioGrid.setDate(inicioGrid.getDate() - primerDia.getDay()); // retrocede al domingo
+
+      let html = "";
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(inicioGrid);
+        d.setDate(inicioGrid.getDate() + i);
+        const fechaStr = d.toISOString().slice(0, 10);
+        const esDelMes = d.getMonth() === agendaMes;
+        const esHoy = d.getTime() === hoyBase.getTime();
+        const eventos = eventosMes[fechaStr] || [];
+        const tiposUnicos = [...new Set(eventos.map(e => e.tipo))].slice(0, 4);
+
+        html += `<div class="agenda-day${esDelMes ? "" : " out"}${esHoy ? " today" : ""}${eventos.length ? " has-events" : ""}"
+          ${eventos.length ? `onclick="openAgendaDia('${fechaStr}')"` : ""}>
+          <div class="agenda-day-num">${d.getDate()}</div>
+          <div class="agenda-day-dots">${tiposUnicos.map(t => `<span class="agenda-dot ${t}"></span>`).join("")}</div>
+        </div>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    window.openAgendaDia = function(fechaStr) {
+      const eventos = getEventosDelMes(agendaAno, agendaMes)[fechaStr] || [];
+      if (!eventos.length) return;
+
+      const d = new Date(fechaStr + "T00:00:00");
+      document.getElementById("agendaDiaTitle").textContent =
+        `${d.getDate()} de ${MESES_LARGO[d.getMonth()]} — ${eventos.length} compromiso${eventos.length !== 1 ? "s" : ""}`;
+
+      const lista = document.getElementById("agendaDiaLista");
+      lista.innerHTML = eventos.map(e => {
+        if (e.r) {
+          const r = e.r;
+          return `<div class="agenda-item-row">
+            <span class="agenda-item-badge ${e.tipo}">${e.label}</span>
+            <div class="agenda-item-main-wrap">
+              <div class="agenda-item-main">${r.numero || "—"} · ${r.cliente_nombre || "—"}</div>
+              <div class="agenda-item-meta">${fmt(r.valor_total)} · Saldo ${fmt(Math.max(0,(r.valor_total||0)-(r.abono||0)))}</div>
+            </div>
+            <button class="btn btn-ghost btn-sm agenda-item-go" onclick="goToSection('remisiones')">Ver</button>
+          </div>`;
+        } else {
+          const m = e.m;
+          return `<div class="agenda-item-row">
+            <span class="agenda-item-badge ${e.tipo}">${e.label}</span>
+            <div class="agenda-item-main-wrap">
+              <div class="agenda-item-main">${m.item_nombre || "—"}</div>
+              <div class="agenda-item-meta">${m.item_codigo || ""}</div>
+            </div>
+            <button class="btn btn-ghost btn-sm agenda-item-go" onclick="goToSection('mantenimiento')">Ver</button>
+          </div>`;
+        }
+      }).join("");
+
+      document.getElementById("overlayAgendaDia").classList.add("open");
+    };
+    function closeAgendaDia() {
+      document.getElementById("overlayAgendaDia").classList.remove("open");
+    }
+    document.getElementById("closeModalAgendaDia").addEventListener("click", closeAgendaDia);
+    document.getElementById("cancelAgendaDia").addEventListener("click", closeAgendaDia);
+
+    document.getElementById("agendaPrev").addEventListener("click", () => {
+      agendaMes--; if (agendaMes < 0) { agendaMes = 11; agendaAno--; }
+      renderAgenda();
+    });
+    document.getElementById("agendaNext").addEventListener("click", () => {
+      agendaMes++; if (agendaMes > 11) { agendaMes = 0; agendaAno++; }
+      renderAgenda();
+    });
 
     // ════════════════════════════════════
     // REPORTES
